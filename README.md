@@ -23,6 +23,8 @@ Contributions to the Hurricane Event Backend are welcome! If you find any issues
 
 Before contributing, please make sure to review the [contribution guidelines.]()
 
+# And ensure you read the [FILE_STRUCTURE](BACKEND_DEVS.md)
+
 # Contact
 For any inquiries or questions, please contact the team leads:
 
