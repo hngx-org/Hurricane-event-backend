@@ -1,7 +1,8 @@
 from flask import Flask
 from api.routes import api
-from api.routes.auth import auth
-from api.routes.user import user
+from config import Config
+from db_connection.connection import db
+from database import models
 
 app = Flask(__name__)
 app.register_blueprint(api, url_prefix='/api')
