@@ -1,1 +1,1 @@
-# Database connection script
+# DB connection script
