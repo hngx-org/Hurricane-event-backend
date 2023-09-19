@@ -2,11 +2,18 @@
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request, abort
-from PIL import Image
-from io import BytesIO
+import re
 from models import db, Event
 
 event = Blueprint('event', __name__)
+
+
+# Function to validate image URL
+def validate_image_url(url):
+    # Define a regex pattern for a valid image URL
+    url_pattern = r'^(https?://)?(www\.)?[\w.-]+\.[a-zA-Z]{2,}(?:/[\w.-]*)*/?$'
+    
+    return re.match(url_pattern, url) is not None
 
 
 @event.route('/api/events', methods=['POST'])
@@ -23,7 +30,11 @@ def create_event():
     thumbnail = data.get('thumbnail')
 
     current_user_id = get_jwt_identity()
-    
+
+    if not validate_image_url(thumbnail):
+        return jsonify(message='Invalid thumbnail image URL'), 400
+
+
     # Create a new event
     event = Event(
         title=title,
@@ -41,18 +52,3 @@ def create_event():
     db.session.commit()
 
     return jsonify({'message': 'Event successfully added'}), 201
-
-
-# Function to validate image URL
-def validate_image_url(url):
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            # Check if the content is an image
-            img = Image.open(BytesIO(response.content))
-            img.verify()
-            return True
-        return False
-    except Exception as e:
-        return False
-
