@@ -19,7 +19,7 @@ def validate_image_url(url):
 @event.route('/api/events', methods=['POST'])
 @jwt_required()
 def create_event():
-    data = request.get_json()
+    data = request.form
     title = data.get('title')
     description = data.get('description')
     location = data.get('location')
