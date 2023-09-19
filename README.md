@@ -10,6 +10,21 @@ To run the _huricane-event-backend_ locally, follow these steps:
 * Setup the configuration, `config.py`
 * Run the app: `flask run`
 
+## Models
+These are the models in the application
+* [User](models/user.py) - Defines the User Entity
+* [Comment](models/comment.py) - Comments Entity
+* [Image](models/image.py) - Defines the entity image added to Comments
+* [Event](models/event.py) - Entity that defines the events available
+* [GroupEvent](models/group_event.py) - Many to Many relationship of between Group and Event
+* [Group](models/group.py) - Entity that defines types of group available
+* [InterestedEvent](models/interested_event.py) - Many to Many relationship between User and Event
+* [UserGroup](models/user_group.py) - Many to many relationship table between User and Group
+
+## DATABASE
+The database for this project is defined in this [here](db_connection/connection.py)...
+`from db_connection.connection import db`
+
 ## Usage
 The _huricane-event-backend_ provides a RESTful API for managing events and related data on the events app.
 Some API endpoints include:

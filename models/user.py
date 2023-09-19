@@ -1,4 +1,6 @@
-from . import db  
+from db_connection.connection import db
+
+
 class User(db.Model):
     """
     Represents a user in the application.
