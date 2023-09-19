@@ -1,1 +1,1 @@
-# Database connection scriptz
+# Database connection scripts
