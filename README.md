@@ -21,7 +21,7 @@ For a detailed documentation on this API, please refer to [DOCUMENTATION.md]()
 ## Contributing
 Contributions to the Hurricane Event Backend are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
-Before contributing, please make sure to review the [contribution guidelines.]()
+Before contributing, please make sure to review the [CONTRIBUTING.md]()
 
 # Contact
 For any inquiries or questions, please contact the team leads:
