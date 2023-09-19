@@ -13,5 +13,4 @@ packaging==23.1
 SQLAlchemy==2.0.21
 typing_extensions==4.8.0
 Werkzeug==2.3.7
-pkg_resources==0.0.0
 zipp==3.17.0
