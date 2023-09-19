@@ -2,6 +2,12 @@ from flask import render_template, request, redirect, url_for, flash
 from app import app, db
 from .models import User
 from .forms import SignupForm
+import re
+
+# Define the email validation function
+def is_valid_email(email):
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(pattern, email)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -11,7 +17,7 @@ def signup():
         name = form.name.data
         password = form.password.data
 
-        # Perform email validation here (e.g., using regex)
+        # Perform email validation using the is_valid_email function
         if not is_valid_email(email):
             flash('Invalid email address', 'error')
             return redirect(url_for('signup'))
