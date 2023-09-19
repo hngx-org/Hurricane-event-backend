@@ -28,3 +28,7 @@ class BaseModel:
             new_dict.pop("_sa_instance_state")
 
         return new_dict
+
+    def save(self):
+        """Saves the current state of the object"""
+        models.storage.save()
