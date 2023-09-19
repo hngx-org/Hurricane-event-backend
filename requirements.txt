@@ -3,6 +3,8 @@ click==8.1.7
 Flask==2.3.3
 flask-marshmallow==0.15.0
 Flask-SQLAlchemy==3.1.1
+greenlet==2.0.2
+importlib-metadata==6.8.0
 itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.1
@@ -11,3 +13,5 @@ packaging==23.1
 SQLAlchemy==2.0.21
 typing_extensions==4.8.0
 Werkzeug==2.3.7
+pkg_resources==0.0.0
+zipp==3.17.0
