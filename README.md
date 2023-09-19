@@ -21,6 +21,10 @@ These are the models in the application
 * [InterestedEvent](models/interested_event.py) - Many to Many relationship between User and Event
 * [UserGroup](models/user_group.py) - Many to many relationship table between User and Group
 
+## DATABASE
+The database for this project is defined in this [here](db_connection/connection.py)...
+`from db_connection.connection import db`
+
 ## Usage
 The _huricane-event-backend_ provides a RESTful API for managing events and related data on the events app.
 Some API endpoints include:
