@@ -13,14 +13,14 @@ class EventSchema(Schema):
         id (UUID): Unique identifier for the event (read-only).
         title (str): Title of the event (required).
         description (str): Description of the event (required).
+        creator (UserSchema): Nested schema for the event's creator information (read-only).
+        creator_id (UUID): ID of the user who created the event (required).
         location (str): Location of the event (required).
         start_date (date): Start date of the event (required, format: 'YYYY-MM-DD').
         end_date (date): End date of the event (required, format: 'YYYY-MM-DD').
         start_time (time): Start time of the event (required, format: 'HH:MM:SS').
         end_time (time): End time of the event (required, format: 'HH:MM:SS').
         thumbnail (str): URL to the event's thumbnail image (required).
-        creator_id (UUID): ID of the user who created the event (required).
-        creator (UserSchema): Nested schema for the event's creator information (read-only).
 
     Usage:
         - Use this schema to serialize event data before sending responses.
@@ -31,27 +31,27 @@ class EventSchema(Schema):
             'id': '6f84df90-49cc-4bd1-8a78-8f178164e093',
             'title': 'Sample Event',
             'description': 'This is a sample event description.',
+            'creator_id': 'a61e24bd-8243-4ecb-becb-3f2621a019e7'
             'location': 'Sample Location',
             'start_date': '2023-09-20',
             'end_date': '2023-09-20',
             'start_time': '10:00:00',
             'end_time': '12:00:00',
             'thumbnail': 'https://example.com/thumbnail.jpg',
-            'creator_id': 'a61e24bd-8243-4ecb-becb-3f2621a019e7'
         }
 
     """
     id = fields.UUID(dump_only=True, required=True)
     title = fields.Str(required=True)
     description = fields.Str(required=True)
+    creator = fields.Nested(UserSchema, required=True)
+    creator_id = fields.UUID(required=True)
     location = fields.Str(required=True)
     start_date = fields.Date(format='%Y-%m-%d', required=True)
     end_date = fields.Date(format='%Y-%m-%d', required=True)
     start_time = fields.Time(format='%H:%M:%S', required=True)
     end_time = fields.Time(format='%H:%M:%S', required=True)
     thumbnail = fields.Str(data_key='thumbnail', attribute='thumbnail', required=True)
-    creator_id = fields.UUID(required=True)
-    creator = fields.Nested(UserSchema, required=True)
 
 
 class EventUpdateSchema(Schema):
