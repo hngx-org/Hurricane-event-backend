@@ -2,6 +2,8 @@
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request, abort
+from PIL import Image
+from io import BytesIO
 from models import db, Event
 
 event = Blueprint('event', __name__)
@@ -39,3 +41,18 @@ def create_event():
     db.session.commit()
 
     return jsonify({'message': 'Event successfully added'}), 201
+
+
+# Function to validate image URL
+def validate_image_url(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            # Check if the content is an image
+            img = Image.open(BytesIO(response.content))
+            img.verify()
+            return True
+        return False
+    except Exception as e:
+        return False
+
