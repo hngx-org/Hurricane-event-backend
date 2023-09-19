@@ -1,15 +1,13 @@
 from flask import Flask
-from database import db
+from config import Config
+from db_connection.connection import db
+from database import models
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///event_app.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object(Config)
 
 db.init_app(app)
-
-with app.app_context():
-    db.create_all()
 
 @app.route('/')
 def hello_world():  # put application's code here
