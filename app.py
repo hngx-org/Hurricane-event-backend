@@ -9,9 +9,13 @@ app.config.from_object(Config)
 
 db.init_app(app)
 
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
+with app.app_context():
+    db.create_all()
+
+
+    @app.route('/')
+    def hello_world():  # put application's code here
+        return 'Hello World!'
 
 
 if __name__ == '__main__':
