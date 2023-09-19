@@ -6,27 +6,18 @@
 </head>
 <body>
     <h1>Signup</h1>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    {% endwith %}
     <form method="POST">
+        {{ form.hidden_tag() }}
         <label for="email">Email:</label>
-        <input type="email" name="email" required><br>
+        {{ form.email() }}<br>
 
         <label for="name">Name:</label>
-        <input type="text" name="name" required><br>
+        {{ form.name() }}<br>
 
         <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
+        {{ form.password() }}<br>
 
         <input type="submit" value="Signup">
     </form>
 </body>
 </html>
-
