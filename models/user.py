@@ -28,3 +28,5 @@ class User(BaseModel, Base):
         self. access_token = access_token
         self.refresh_token = refresh_token
         self.avatar = avatar
+
+        super().__init__()

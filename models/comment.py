@@ -16,3 +16,5 @@ class Comment(BaseModel, Base):
         self.body = body
         self.user_id = user_id
         self.event_id = event_id
+
+        super().__init__()

@@ -14,3 +14,5 @@ class Image(BaseModel, Base):
         """Initializes the image object"""
         self.image_url = image_url
         self.comment_id = comment_id
+
+        super().__init__()

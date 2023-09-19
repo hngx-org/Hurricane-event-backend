@@ -24,3 +24,5 @@ class Group(BaseModel, Base):
     def __init__(self, title: str):
         """Initializes the Group"""
         self.title = title
+
+        super().__init__()

@@ -51,3 +51,5 @@ class Event(BaseModel, Base):
         self.end_time = end_time
         self.thumbnail = thumnail
         self.creator_id = creator_id
+
+        super().__init__()
