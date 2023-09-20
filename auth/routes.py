@@ -29,7 +29,7 @@ def token_required(func):
     """For protected route"""
     @wraps(func)
     def decorated(*args, **kwargs):
-        token = request.args.get('access_token')
+        token = request.headers.get('access_token')
         if not args:
             return jsonify(Response='access_token  is missing'), 401
         try:
@@ -68,18 +68,18 @@ def login():
     if it does not exist create, creates a user and session id
     """
 
-    email = request.args.get('email')
+    email = request.json.get('email')
     try:
         user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one()
     except NoResultFound:
         session['logged_in'] = True
 
         token = jwt.encode({
-            'user': request.args.get('email'),
+            'user': email,
         },
             current_app.secret_key)
 
-        new_user = User(name=request.args.get('name'), email=email, access_token=token, avatar=request.args.get('picture'))
+        new_user = User(name=request.json.get('name'), email=email, access_token=token, avatar=request.json.get('picture'))
         db.session.add(new_user)
         db.session.commit()
 
