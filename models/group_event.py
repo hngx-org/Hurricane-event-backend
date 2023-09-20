@@ -1,13 +1,10 @@
-from db_connection.connection import db
+from sqlalchemy import Column, String
+from sqlalchemy import ForeignKey, Table
+from models.basemodel import Base
 
 
-class GroupEvent(db.Model):
-    """
-    GroupEvent model represents the relationship between groups and events.
-
-    Attributes:
-        event_id (str): The foreign key to the Event model as a text-based UUID.
-        group_id (str): The foreign key to the Group model as a text-based UUID.
-    """
-    event_id = db.Column(db.String(36), db.ForeignKey('event.id'), primary_key=True)  
-    group_id = db.Column(db.String(36), db.ForeignKey('group.id'), primary_key=True)  
+group_events = Table("group_events",
+                     Base.metadata,
+                     Column("event_id", String(60), ForeignKey("events.id")),
+                     Column("group_id", String(60), ForeignKey("groups.id"))
+                     )
