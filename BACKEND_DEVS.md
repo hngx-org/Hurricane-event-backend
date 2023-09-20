@@ -14,4 +14,4 @@
 
     you can write different file for each api call, it'll be combined into one file during pull requests.
     Note, only create a new file if the required file is not present during the most Recent pull.
-    If you file structure do not follow this procedure, you eork will not be accepted nor merged.
+    If you file structure do not follow this procedure, you work will not be accepted nor merged.
