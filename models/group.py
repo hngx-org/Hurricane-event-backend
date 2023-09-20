@@ -1,12 +1,28 @@
-from db_connection.connection import db
+"""Model for the Groups"""
+from sqlalchemy import Column, String, Table, ForeignKey
+from sqlalchemy.orm import relationship
+from models.basemodel import BaseModel, Base
+from models.event import group_events
 
-class Group(db.Model):
-    """
-    Group model represents a group or community in the system.
+user_groups = Table("user_groups",
+                    Base.metadata,
+                    Column("user_id", String(60), ForeignKey("users.id")),
+                    Column("group_id", String(60), ForeignKey("groups.id"))
+                    )
 
-    Attributes:
-        id (str): The unique identifier for the group as a text-based UUID.
-        title (str): The title or name of the group.
-    """
-    id = db.Column(db.String(36), primary_key=True, unique=True, nullable=False)  
-    title = db.Column(db.String(255))
+
+class Group(BaseModel, Base):
+    """Group Model"""
+
+    __tablename__ = "groups"
+    title = Column(String(60), unique=True)
+    users = relationship("User", secondary=user_groups,
+                         back_populates="groups")
+    events = relationship("Event", secondary=group_events,
+                          back_populates="groups")
+
+    def __init__(self, title: str):
+        """Initializes the Group"""
+        self.title = title
+
+        super().__init__()

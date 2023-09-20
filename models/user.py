@@ -1,47 +1,32 @@
-from db_connection.connection import db
+"""Model of the User class"""
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
+from models.basemodel import BaseModel, Base
+from models.group import user_groups
+from models.event import interested_events
 
 
-class User(db.Model):
-    """
-    Represents a user in the application.
+class User(BaseModel, Base):
+    """User Class"""
 
-    Attributes:
-        id (int): The unique identifier for the user.
-        name (str): The name of the user.
-        email (str): The email address of the user.
+    __tablename__ = "users"
+    name = Column(String(120))
+    email = Column(String(120), unique=True)
+    access_token = Column(String(255))
+    refresh_token = Column(String(255))
+    avatar = Column(String(255), nullable=True)
+    groups = relationship("Group", secondary=user_groups,
+                          back_populates="users")
+    events = relationship("Event", secondary=interested_events,
+                          back_populates="users")
 
-    Constraints:
-        - `id`, `name`, and `email` cannot be null.
-        - `name` accepts only letters and spaces.
-        - `id` must be greater than 0.
-        - `email` must be unique.
+    def __init__(self, name: str, email: str, access_token: str,
+                 refresh_token: str, avatar: str):
+        """Initializes the User class"""
+        self.name = name
+        self.email = email
+        self. access_token = access_token
+        self.refresh_token = refresh_token
+        self.avatar = avatar
 
-    Methods:
-        json_repr(): Returns a JSON-like representation of the user object.
-
-    Table Name:
-        users
-
-    Usage:
-        user = User(id=1, name='John Doe', email='john.doe@example.com')
-        json_data = user.json_repr()
-        print(json_data)
-
-    Example Output:
-        {'id': 1, 'name': 'John Doe', 'email': 'john.doe@example.com'}
-    """
-    __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
-    name = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-  
-    def __repr__(self):
-        return self.json_repr()
-
-    def json_repr(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'email': self.email
-        }
+        super().__init__()

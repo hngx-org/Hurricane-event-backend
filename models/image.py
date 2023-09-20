@@ -1,14 +1,18 @@
-from db_connection.connection import db
+"""Model for Images"""
+from sqlalchemy import Column, String, ForeignKey
+from models.basemodel import BaseModel, Base
 
-class Image(db.Model):
-    """
-    Image model represents an image associated with a comment.
 
-    Attributes:
-        id (str): The unique identifier for the image as a text-based UUID.
-        comment_id (str): The foreign key to the Comment model as a text-based UUID representing the comment the image is associated with.
-        image_url (str): URL to the image.
-    """
-    id = db.Column(db.String(36), primary_key=True, unique=True, nullable=False)  
-    comment_id = db.Column(db.String(36), db.ForeignKey('comment.id'))  
-    image_url = db.Column(db.String(255))
+class Image(BaseModel, Base):
+    """Image class"""
+
+    __tablename__ = "images"
+    image_url = Column(String(255))
+    comment_id = Column(String(60), ForeignKey("comments.id"))
+
+    def __init__(self, image_url: str, comment_id: str):
+        """Initializes the image object"""
+        self.image_url = image_url
+        self.comment_id = comment_id
+
+        super().__init__()
