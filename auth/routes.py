@@ -54,10 +54,8 @@ def callback():
         return jsonify(alert='Not authorized'), 401
     data = dict(token)
     user_info = data.get('userinfo')
-    name = user_info.get('name')
     email = user_info.get('email')
-    picture = user_info.get('picture')
-    return jsonify(url=url_for('login'), method='POST', name=name, email=email, picture=picture), 200
+    return jsonify(url=url_for('login'), method='POST', email=email), 200
 
 
 @auth.route('/users/login', methods=['POST'])
@@ -72,6 +70,8 @@ def login():
     try:
         user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one()
     except NoResultFound:
+        return redirect(url_for('signup')), 307
+    else:
         session['logged_in'] = True
 
         token = jwt.encode({
@@ -79,10 +79,8 @@ def login():
         },
             current_app.secret_key)
 
-        new_user = User(name=request.json.get('name'), email=email, access_token=token, avatar=request.json.get('picture'))
-        db.session.add(new_user)
+        user.access_token = token
         db.session.commit()
 
-        return jsonify(access_token=token, name=request.args.get('name'), email=email, message='new user created'), 201
-    else:
-        return jsonify(access_token=user.access_token, name=user.name, email=user.email), 200
+        return jsonify(access_token=user.access_token, name=user.name, email=user.email, response='Logged in successfully'), 200
+
