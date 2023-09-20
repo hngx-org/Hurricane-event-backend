@@ -82,10 +82,14 @@ class DBStorage:
 
     def delete(self, cls: Comment | Event | Group | Image | User | str,
                id: str) -> None:
-        """Deletes an instance of the model from the database"""
+        """Deletes an instance of the model from the database using id"""
 
         if type(cls) is str:
             cls = classes.get(cls)
         if cls is not None and cls in classes.values():
             inst = self.__session.query(cls).filter_by(id=id).first()
             self.__session.delete(inst)
+
+    def obj_delete(self, obj: Comment | Event | Group | Image | User):
+        """Deletes an instance of the model from the database"""
+        self.__session.delete(obj)
