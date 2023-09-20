@@ -10,6 +10,7 @@
 
 * All authentication should be done in the auth folder.
 * All input data are in **JSON** Format
+* ALWAYS PERFORM A PULL BEFORE A PR
 
 
 
