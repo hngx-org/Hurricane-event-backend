@@ -1,14 +1,9 @@
 """Model for the Groups"""
-from sqlalchemy import Column, String, Table, ForeignKey
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.basemodel import BaseModel, Base
 from models.event import group_events
-
-user_groups = Table("user_groups",
-                    Base.metadata,
-                    Column("user_id", String(60), ForeignKey("users.id")),
-                    Column("group_id", String(60), ForeignKey("groups.id"))
-                    )
+from models.user_group import user_groups
 
 
 class Group(BaseModel, Base):

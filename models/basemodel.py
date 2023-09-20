@@ -32,3 +32,7 @@ class BaseModel:
     def save(self):
         """Saves the current state of the object"""
         models.storage.save()
+
+    def delete(self):
+        """Deletes itself from the session"""
+        models.storage.obj_delete(self)

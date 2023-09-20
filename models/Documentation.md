@@ -104,6 +104,23 @@ This returns a single object
 <User at 232xxx>
 ```
 
+### Deleting from the Database
+To delete from the database, there are two method:
+- Delete using the `storage` object
+    ```python
+    import models
+    ...
+    user_id = ""
+    models.storage.delete("User", id=user_id)
+    ```
+- Delete using the object instance
+    ```python
+    import models
+    ...
+    user = models.storage.get("User", id="")
+    user.delete()
+    ```
+
 *Note:* When passing class strings to the methods, ensure that it starts with a capital letter and follows the format of the class.
 Example:
 - "User" for User or "RandomClass" for RandomClass is correct
