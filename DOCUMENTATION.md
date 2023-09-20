@@ -81,15 +81,6 @@ Attributes:
 
 ---
 
-# Group API Documentation
-
-This documentation provides details on the Group API, which allows you to manage groups. The API supports the creation of new groups and provides the ability to retrieve a list of existing groups.
-
-## API Base URL
-
-The base URL for this API is `/api/groups`. All endpoints described below are relative to this base URL.
-
-## Endpoints
 
 
 ## Usage with Provided Schema
