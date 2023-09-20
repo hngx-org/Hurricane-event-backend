@@ -1,13 +1,9 @@
-from db_connection.connection import db
+from sqlalchemy import Column, String, Table, ForeignKey
+from models.basemodel import Base
 
 
-class UserGroup(db.Model):
-    """
-    UserGroup model represents the relationship between users and groups.
-
-    Attributes:
-        user_id (str): The foreign key to the User model as a text-based UUID.
-        group_id (str): The foreign key to the Group model as a text-based UUID.
-    """
-    user_id = db.Column(db.String(36), db.ForeignKey('user.id'), primary_key=True) 
-    group_id = db.Column(db.String(36), db.ForeignKey('group.id'), primary_key=True) 
+user_groups = Table("user_groups",
+                    Base.metadata,
+                    Column("user_id", String(60), ForeignKey("users.id")),
+                    Column("group_id", String(60), ForeignKey("groups.id"))
+                    )

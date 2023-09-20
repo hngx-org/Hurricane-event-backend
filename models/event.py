@@ -4,20 +4,8 @@ from sqlalchemy import Column, String, Date, DateTime
 from sqlalchemy import ForeignKey, Table
 from sqlalchemy.orm import relationship
 from models.basemodel import BaseModel, Base
-
-group_events = Table("group_events",
-                     Base.metadata,
-                     Column("event_id", String(60), ForeignKey("events.id")),
-                     Column("group_id", String(60), ForeignKey("groups.id"))
-                     )
-
-interested_events = Table("interested_events",
-                          Base.metadata,
-                          Column("user_id", String(60),
-                                 ForeignKey("users.id")),
-                          Column("event_id", String(60),
-                                 ForeignKey("events.id"))
-                          )
+from models.group_event import group_events
+from models.interested_event import interested_events
 
 
 class Event(BaseModel, Base):
