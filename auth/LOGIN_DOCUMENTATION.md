@@ -29,11 +29,11 @@ Before using these authentication routes, make sure to set the following environ
 - Description: Handles the callback from Google after successful authentication.
 - Endpoint: `/users/login/callback`
 - Method: GET
-- Returns: User information (name, email, picture) in JSON format, along with a URL for POST login.
+- Returns: User information (email) in JSON format, along with a URL for POST login.
 
 ### Login (`/users/login` - POST)
 
-- Description: Handles user login. Checks if the email already exists in the database, and if not, creates a new user.
+- Description: Handles user login. Checks if the email already exists in the database, and creates an access token.
 - Endpoint: `/users/login`
 - Method: POST
 - request body(JSON):
