@@ -14,7 +14,7 @@ app.config.from_object(Config)
 # Route that adds a comment to an event
 @app.route('/api/events/<int:event_id>/comments', methods=['POST'])
 def add_comment(event_id):
-    event = GroupEvent.query.get(event_id)
+    event = Comment.query.get(event_id)
     if not event:
         return jsonify({'message': 'Event does not exist'}), 404
 
