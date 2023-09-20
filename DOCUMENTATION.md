@@ -99,3 +99,19 @@ For example, you can create routes to:
 - Retrieve event details and list events in various ways based on user interactions.
 
 
+
+
+
+
+# User_Groups API Documentation
+
+This documentation provides an API that provide Groups a user is currently in using userid. The API also retrieves a list of all groups ,if more than one exists.
+
+## API Base URL
+
+The base URL for this API is `api/<int:userid>/groups`. The endpoint described below are relative to this base URL.
+
+## Endpoints
+- **Endpoint**: `api/<int:userid>/groups`
+- **HTTP Method**: GET
+- **Response**: Returns the list of groups the user is currently in.
