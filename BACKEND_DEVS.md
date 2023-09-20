@@ -1,8 +1,8 @@
 # Approved file structure.
 
-* All API calls will be writtem in the api folder.
+* All API calls will be written in the API folder.
 
-* All models should be in seperate files under the models folder
+* All models should be in seperate files under the models folder (This has been completed)
 
 * The db_connection folder is where we'll connect to the db from. so if you need the db in your implementation just import db from db_connection.
 
