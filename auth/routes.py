@@ -80,7 +80,7 @@ def login():
             current_app.secret_key)
 
         user.access_token = token
-        storage.session.commit()
+        models.storage.session.commit()
 
         return jsonify(access_token=user.access_token, name=user.name, email=user.email, response='Logged in successfully'), 200
 
