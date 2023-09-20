@@ -16,6 +16,23 @@ with app.app_context():
     @app.route('/')
     def hello_world():  # put application's code here
         return 'Hello World!'
+    
+    @app.route('/api/events/<string:group_id>/<string:event_id>', methods=['DELETE'])
+    def delete_group_event(group_id,event_id):
+    event = models.group_event.GroupEvent.query.filterby(event_id = event_id, group_id = group_id).first()
+    
+    if event:
+        db.session.delete(event)
+        db.session.commit()
+        
+        return jsonify({
+            "message": "Event {event_id} deleted succesfully"
+        }), 200
+    
+    else:
+        return jsonify({
+            "error": "Event not found"
+        }), 404
 
 
 if __name__ == '__main__':
