@@ -12,7 +12,7 @@ def get_all_users():
     users = session.query(User).all()
     session.close()
 
-    user_list = [{'id': user.id, 'name': user.name, 'email': user.email, 'avatar': user.avatar} for user in users]
+    user_list = [{'id': user.id, 'name': user.name, 'email': user.email} for user in users]
     return jsonify(user_list)
 
 # Route to get a user based on email
@@ -23,7 +23,7 @@ def get_user_by_email(email):
     session.close()
 
     if user:
-        user_info = {'id': user.id, 'name': user.name, 'email': user.email, 'avatar': user.avatar}
+        user_info = {'id': user.id, 'name': user.name, 'email': user.email}
         return jsonify(user_info)
     else:
         return jsonify({'error': 'User not found'}), 404
