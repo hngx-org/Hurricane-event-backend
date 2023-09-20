@@ -1,4 +1,4 @@
-from flask import Blueprint, abort
+from flask import Blueprint, abort, jsonify
 import models # storage will be used for all db session based queries
 from models.user import User
 from models.comment import Comment
@@ -21,6 +21,9 @@ def format_output(comment):
         'event_id': comment.event_id
         }
 
+"""
+    A GET Endpoint that returns a list of comments for an event
+"""
 @event.route('/api/events/<int:event_id>/comments', methods=['GET'])
 def retrieve_comments_by_event(event_id):
     try:
