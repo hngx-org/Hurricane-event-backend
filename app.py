@@ -9,10 +9,10 @@ app = Flask(__name__)
 # db.init_app(app)
 
 
-@app.before_request
-def load_database():
+@app.teardown_appcontext
+def close_database():
     """Loads data into session from database"""
-    models.storage.load()
+    models.storage.close()
 
 
 @app.route('/')
