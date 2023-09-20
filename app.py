@@ -12,6 +12,8 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+    from events.routes import event_route
+    app.register_blueprint(event_route, url_prefix='/events')
 
     @app.route('/')
     def hello_world():  # put application's code here
