@@ -25,7 +25,7 @@ class User(BaseModel, Base):
         """Initializes the User class"""
         self.name = name
         self.email = email
-        self. access_token = access_token
+        self.access_token = access_token
         self.refresh_token = refresh_token
         self.avatar = avatar
 

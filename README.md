@@ -31,14 +31,14 @@ Some API endpoints include:
 ```angular2html
 
 ```
-For a detailed documentation on this API, please refer to [DOCUMENTATION.md]()
+For a detailed documentation on this API, please refer to [DOCUMENTATION.md](DOCUMENTATION.md).
 
 ## Contributing
 Contributions to the Hurricane Event Backend are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
-Before contributing, please make sure to review the [contribution guidelines.]()
+Before contributing, please make sure to review the [contribution guidelines.]().
 
-# And ensure you read the [FILE_STRUCTURE](BACKEND_DEVS.md)
+**And ensure you read the [file structure](BACKEND_DEVS.md).**
 
 # Contact
 For any inquiries or questions, please contact the team leads:
