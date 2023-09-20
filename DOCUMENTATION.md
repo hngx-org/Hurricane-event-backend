@@ -91,21 +91,6 @@ The base URL for this API is `/api/groups`. All endpoints described below are re
 
 ## Endpoints
 
-### Create a New Group
-
-- **Endpoint**: `/api/groups`
-- **HTTP Method**: POST
-- **Request Body**: JSON
-  - `title` (string, required): The title or name of the group.
-- **Response**: Returns the ID and title of the created group if successful.
-
-#### Example Request Body
-
-```json
-{
-    "title": "My Group"
-}
-
 
 ## Usage with Provided Schema
 
