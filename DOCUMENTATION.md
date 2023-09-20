@@ -81,8 +81,6 @@ Attributes:
 
 ---
 
-
-
 ## Usage with Provided Schema
 
 This database models provided in this documentation are designed to match the schema provided. Here's how they are used according to the schema:
