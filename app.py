@@ -1,23 +1,22 @@
 from flask import Flask
-from config import Config
-from db_connection.connection import db
+# from config import Config
+# from db_connection.connection import db
 import models
 
 app = Flask(__name__)
 
-app.config.from_object(Config)
+# app.config.from_object(Config)
+# db.init_app(app)
 
-db.init_app(app)
+@app.teardown_appcontext
+def close_database():
+    """Loads data into session from database"""
+    models.storage.close()
 
-with app.app_context():
-    db.create_all()
 
-    from events.routes import event_route
-    app.register_blueprint(event_route, url_prefix='/events')
-
-    @app.route('/')
-    def hello_world():  # put application's code here
-        return 'Hello World!'
+@app.route('/')
+def hello_world():  # put application's code here
+    return 'Hello World!'
 
 
 if __name__ == '__main__':
