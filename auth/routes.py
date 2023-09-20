@@ -3,7 +3,7 @@ from flask import Blueprint, redirect, url_for, jsonify, request, session, curre
 import os
 from models.user import User
 from authlib.integrations.flask_client import OAuth
-from db_connection.connection import db
+from models import storage
 from sqlalchemy.orm.exc import NoResultFound
 import jwt
 from functools import wraps
@@ -68,7 +68,7 @@ def login():
 
     email = request.json.get('email')
     try:
-        user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one()
+        user = storage.session.execute(storage.select(User).filter_by(email=email)).scalar_one()
     except NoResultFound:
         return redirect(url_for('signup')), 307
     else:
@@ -80,7 +80,7 @@ def login():
             current_app.secret_key)
 
         user.access_token = token
-        db.session.commit()
+        storage.session.commit()
 
         return jsonify(access_token=user.access_token, name=user.name, email=user.email, response='Logged in successfully'), 200
 
