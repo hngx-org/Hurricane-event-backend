@@ -75,3 +75,7 @@ class DBStorage:
             cls = classes.get(cls)
         if cls is not None and cls in classes.values():
             return self.__session.query(cls).filter_by(id=id).first()
+
+    def close(self):
+        """Closes the session connection"""
+        self.__session.remove()
