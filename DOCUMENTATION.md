@@ -112,6 +112,7 @@ This documentation provides an API that provide Groups a user is currently in us
 The base URL for this API is `api/<int:userid>/groups`. The endpoint described below are relative to this base URL.
 
 ## Endpoints
+
 - **Endpoint**: `api/<int:userid>/groups`
 - **HTTP Method**: GET
 - **Response**: Returns the list of groups the user is currently in.
