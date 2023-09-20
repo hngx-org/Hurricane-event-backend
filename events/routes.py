@@ -1,8 +1,12 @@
-# Routes for handling event related functionality (event creation, updating and deleting)
+import models# storage will be used for all db session based queries
+from flask import Flask, jsonify, request, session
+from models.user import User
+from models.comment import Comment
+from models.event import Event
+from models.interested_event import InterestedEvent
 
-from flask import Flask, request, jsonify
-from db_connection.connection import db
-from models import Event, InterestedEvent, Comment, GroupEvent
+
+# Routes for handling event related functionality (event creation, updating and deleting)
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -20,9 +24,6 @@ def add_comment(event_id):
     else:
         comment = Comment(body=body)
         event.comments.append(comment)
-        db.session.add(comment)
-        db.session.commit()
+        models.storage.session.add(comment)
+        models.storage.session.commit()
         return jsonify({'message': 'Comment added successfully'}), 201
-
-if __name__ == '__main__':
-    app.run(debug=True)
