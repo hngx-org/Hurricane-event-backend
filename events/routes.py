@@ -19,7 +19,7 @@ def validate_image_url(url):
 @event.route('/api/events', methods=['POST'])
 @jwt_required()
 def create_event():
-    data = request.form
+    data = request.get_json()
     title = data.get('title')
     description = data.get('description')
     location = data.get('location')
@@ -28,6 +28,8 @@ def create_event():
     end_date = data.get('end_date')
     end_time = data.get('end_time')
     thumbnail = data.get('thumbnail')
+    group_id = data.get('group_id')
+
 
     current_user_id = get_jwt_identity()
 
@@ -45,7 +47,8 @@ def create_event():
         end_date=end_date,
         end_time=end_time,
         thumbnail_url=thumbnail,
-        user_id=current_user_id
+        user_id=current_user_id,
+        group_id=group_id     
     )
 
     db.session.add(event)
