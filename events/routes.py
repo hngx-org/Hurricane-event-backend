@@ -8,8 +8,7 @@ from models.interested_event import InterestedEvent
 
 # Routes for handling event related functionality (event creation, updating and deleting)
 
-app = Flask(__name__)
-app.config.from_object(Config)
+app = Blueprint('app', __name__)
 
 # Route that adds a comment to an event
 @app.route('/api/events/<int:event_id>/comments', methods=['POST'])
