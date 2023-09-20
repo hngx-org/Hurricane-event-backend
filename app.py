@@ -1,21 +1,23 @@
 from flask import Flask
-from config import Config
-from db_connection.connection import db
+# from config import Config
+# from db_connection.connection import db
 import models
 
 app = Flask(__name__)
 
-app.config.from_object(Config)
-
-db.init_app(app)
-
-with app.app_context():
-    db.create_all()
+# app.config.from_object(Config)
+# db.init_app(app)
 
 
-    @app.route('/')
-    def hello_world():  # put application's code here
-        return 'Hello World!'
+@app.before_request
+def load_database():
+    """Loads data into session from database"""
+    models.storage.load()
+
+
+@app.route('/')
+def hello_world():  # put application's code here
+    return 'Hello World!'
 
 
 if __name__ == '__main__':
