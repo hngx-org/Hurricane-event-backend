@@ -22,7 +22,7 @@ def logout():
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
-        return 'Token has expired', 401
+        return 'Expired Token', 401
     except jwt.DecodeError:
         return 'Invalid token', 401
 
