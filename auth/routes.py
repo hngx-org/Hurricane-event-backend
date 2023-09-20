@@ -39,7 +39,9 @@ def token_required(func):
         return func(*args, **kwargs)
 
 
-   
+@auth.route('/users/login', methods=['GET'])
+def signin():
+    return oauth.google.authorize_redirect(redirect_uri=url_for('callback', _external=True))
 
 @auth.route('/users/login/callback', methods=['GET'])
 def callback():
