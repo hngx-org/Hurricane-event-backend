@@ -99,3 +99,92 @@ For example, you can create routes to:
 - Retrieve event details and list events in various ways based on user interactions.
 
 
+
+# Event Creation API Documentation
+
+## Overview
+
+This documentation provides information on how to use the Event Creation API. The API allows users to create events by sending a POST request to the `/api/events` endpoint. It includes JWT (JSON Web Token) authentication for user validation and SQLAlchemy for interacting with the SQL database.
+
+## API Endpoints
+
+### Create Event
+
+- **Endpoint:** `/api/events`
+- **HTTP Method:** POST
+- **Authentication:** JWT required
+
+#### Request Parameters
+
+The API accepts the following form data parameters:
+
+1. `title` (string, required): The title of the event.
+2. `description` (string, required): A description of the event.
+3. `location` (string, required): The location of the event.
+4. `start_date` (string, required): The start date of the event in the format 'YYYY-MM-DD'.
+5. `start_time` (string, required): The start time of the event in the format 'HH:MM:SS'.
+6. `end_date` (string, required): The end date of the event in the format 'YYYY-MM-DD'.
+7. `end_time` (string, required): The end time of the event in the format 'HH:MM:SS'.
+8. `thumbnail_img_url` (string): The URL of the event's thumbnail image.
+9. `user_id` (integer): User ID obtained from JWT authentication.
+
+#### Example Request
+
+```http
+POST /api/events
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer YOUR_JWT_TOKEN
+
+title=Sample Event&description=This is a sample event&location=Sample Location&start_date=2023-09-20&start_time=09:00:00&end_date=2023-09-21&end_time=17:00:00&thumbnail_img_url=https://example.com/thumbnail.jpg&user_id=1
+```
+
+#### Successful Response (HTTP 201)
+
+```json
+{
+    "message": "Event created successfully"
+}
+```
+
+#### Error Response (HTTP 400)
+
+```json
+{
+    "error": "Error message details"
+}
+```
+
+## Database Model
+
+The API uses an SQLAlchemy model for events, which includes the following fields:
+
+- `id` (integer, primary key): Unique identifier for the event.
+- `title` (string): The title of the event.
+- `description` (text): A detailed description of the event.
+- `location` (string): The location where the event takes place.
+- `start_datetime` (datetime): The combined start date and time of the event.
+- `end_datetime` (datetime): The combined end date and time of the event.
+- `thumbnail_url` (string): URL of the event's thumbnail image.
+- `user_id` (integer): The ID of the user who created the event.
+
+## Running the Application
+
+To run the Flask application locally, execute the following command in your terminal:
+
+```
+python app.py
+```
+
+This will start the development server, and you can access the API at `http://localhost:5000`.
+
+## Dependencies
+
+The API relies on the following Python packages:
+
+- Flask
+- Flask-JWT-Extended
+- Flask-SQLAlchemy
+- SQLAlchemy
+
+Install these dependencies using `pip` before running the application.
+
