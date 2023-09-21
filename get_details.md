@@ -65,11 +65,9 @@ Example Request
     }
 ```
 
-### Check the response status code
-if response.status_code == 201:<br>
-> print('Group details successfully retrieved')
-elif response.status_code == 404:<br>
-> print('Group doesn't exist in the db.')
+* Check the response status code
+201 == 'Group details successfully retrieved'
+404 == 'Group doesn't exist in the db.'
     
 <br>
 <br>
