@@ -71,3 +71,42 @@ def get_user_groups(userid):
 
     return jsonify({'user_id': userid, 'groups': group_list}), 200
 
+
+@group_bp.route('/groups/<groupId>/members/<userId>', methods=['POST'])
+def add_user_to_group(groupId, userId):
+    user = models.storage.get(User, userId)
+    group = models.storage.get(Group, groupId)
+
+    if not group:
+        return jsonify({'error: Group not found'}), 404
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+
+    user_group = user_groups.insert().values(user_id=userId, group_id=groupId) # adding user[userId] to group[groupId]
+    db.session.execute(user_group)
+    db.session.commit()  
+
+    return jsonify({'message': 'User added to group successfully'}), 200
+
+
+@group_bp.route('/groups/<groupId>/members/<userId>', methods=['DELETE'])
+def remove_user_from_group(groupId, userId):
+    user = models.storage.get(User, userId)
+    group = models.storage.get(Group, groupId)
+
+    if not group:
+        return jsonify({'error': 'Group not found'}), 404
+    
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    user_group = user_groups.delete().where(
+        user_groups.c.user_id == userId,
+        user_groups.c.group_id == groupId
+    )
+    db.session.execute(user_group)
+    db.session.commit()
+    
+    return jsonify({'message': 'User removed from the group successfully'}), 200              
+
