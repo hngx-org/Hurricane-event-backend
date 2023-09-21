@@ -18,3 +18,11 @@ class Comment(BaseModel, Base):
         self.event_id = event_id
 
         super().__init__()
+
+    # formatter for the comment class
+def json(self):
+    return {
+        'id': self.id,
+        'body': self.body,
+        'event_id': self.event_id
+        }
