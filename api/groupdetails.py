@@ -1,40 +1,7 @@
 from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
+from db_connection.db import db, Group
 
 app = Flask(__name__)
-
-# Replace 'your_database_uri_here' with your actual database URI
-app.config['SQLALCHEMY_DATABASE_URI'] = 'DBurl'
-db = SQLAlchemy(app)
-
-# Define the Group model (assuming you have a 'group' table in your database)
-class Group(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    img_url = db.Column(db.String(255))
-    users = db.relationship('User', secondary='group_user', backref='groups')
-    events = db.relationship('Event', backref='group')
-
-# Define the User model (assuming you have a 'user' table in your database)
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-
-# Define the Event model (assuming you have an 'event' table in your database)
-class Event(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    date = db.Column(db.String(20))
-    group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
-
-# Define the association table for User and Group (many-to-many relationship)
-group_user = db.Table('group_user',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('group_id', db.Integer, db.ForeignKey('group.id'))
-)
-
-# Create the database tables (moved out of the app context)
-db.create_all()
 
 # API endpoints
 
