@@ -1,5 +1,4 @@
 from flask import Flask, jsonify
-# I imported jsonify so that the output of the status will be of better formatting
 from group.routes import group_bp
 from events.routes import event_bp
 from auth.routes import auth
@@ -30,5 +29,4 @@ app.register_blueprint(auth, url_prefix='auth')
 app.register_blueprint(api, url_prefix='/api')
 
 if __name__ == '__main__':
-    app.run(debug=1)
-    # allow debugging mode on local storage testing, will be removed once live
+    app.run()

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 import json
-from models.user import User
+from models.user import *
 
 api = Blueprint('api', __name__)
 
