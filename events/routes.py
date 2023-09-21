@@ -34,7 +34,7 @@ def retrieve_comments_by_event(event_id):
 """
     An Enpoint for updating users events
 """
-@event_bp.route('/events/<int:event_id>', method=['PUT'])
+@event_bp.route('/events/<event_id>', method=['PUT'])
 def update_event(event_id):
     event = Event.query.get(event_id)
     if not event:
