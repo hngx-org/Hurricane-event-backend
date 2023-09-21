@@ -1,4 +1,4 @@
-### Retrieve Group Details Documentaion
+# Retrieve Group Details Documentaion
 
 ## Description
 The /api/groups/<group_id> endpoint is a RESTful API route that retrieves group information from the server based on the unique identifier (group_id) provided in the URL.
@@ -22,7 +22,7 @@ Example Request
 curl --location '/api/groups/<group_id>'
 
 ## Example Response
-```json
+```
     Status: 200 OK
     json
     {
@@ -63,12 +63,12 @@ curl --location '/api/groups/<group_id>'
     }
 ```
 
-# Check the response status code
-if response.status_code == 201:
+### Check the response status code
+if response.status_code == 201:<br>
     print('Group details successfully retrieved')
-elif response.status_code == 404:
+elif response.status_code == 404:<br>
     print('Group doesn't exist in the db.')
+<br>
 
-
-Author: [Zainab Wuraola Mahmud](https://github.com/zee467)
-Email: wura.mahmud@gmail.com
+<p>Author: [Zainab Wuraola Mahmud](https://github.com/zee467)<br>
+Email: wura.mahmud@gmail.com</p>
