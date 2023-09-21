@@ -1,6 +1,7 @@
 import models
 from . import api_views
 from models.user import User
+from flask import request, jsonify
 
 
 @api_views.route("/auth", methods=["POST"])
@@ -8,7 +9,23 @@ def authenticate_user():
     """Authenticates a user
     Returns: user_id
     """
-    pass
+    data = request.get_json()
+    email = data.get("email")
+    name = data.get("name")
+    avatar = data.get("avatar")
+
+    if email:
+        users = models.search("User", email=email)
+        if users:
+            user = users[0]
+        else:
+            if name:
+                user = User(name, email, avatar)
+                user.save()
+            else:
+                return jsonify({"message": "No name found"}), 412
+        return jsonify({"user_id": user.id})
+    return jsonify({"message": "No email found"}), 412
 
 
 @api_views.route("/users/<user_id>")
