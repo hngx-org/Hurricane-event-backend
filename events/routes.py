@@ -3,7 +3,7 @@ import models # storage will be used for all db session based queries
 from models.user import User
 from models.comment import Comment
 from models.event import Event
-from models.interested_event import InterestedEvent
+# from models.interested_event import InterestedEvent
 # Routes for handling event related functionality
 # (event creation, updating and deleting)
 
