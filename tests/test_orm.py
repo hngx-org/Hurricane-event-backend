@@ -35,15 +35,21 @@ class TestORM(unittest.TestCase):
         self.assertIsNotNone(user.id) # again, just to make sure comment has an id :) 
         self.assertIsNotNone(event.id) # again, just to make sure comment has an id :) 
 
+        start_date = datetime(2023, 9, 21).isoformat()
+        end_date = datetime(2023, 9, 22).isoformat()
+        start_time = datetime(2023, 9, 21, 8, 0, 0).isoformat()
+        end_time = datetime(2023, 9, 21, 17, 0, 0).isoformat()
+
+
         event = Event(
             title="Sample Event",
             description="Event Description",
             location="Event Location",
-            start_date=date(2023, 9, 21),
-            end_date=date(2023, 9, 22),
-            start_time=time(10, 0),
-            end_time=time(12, 0),
-            creator_id=user.id,  # Set the creator_id to the user's ID
+            start_date=start_date,
+            end_date=end_date,
+            start_time=start_time,
+            end_time=end_time,
+            creator_id=user.id,  # Set the creator_id to the user's ID :)
         )
         event.save()
         self.assertIsNotNone(event.id) # same  reason as other two above :)
