@@ -11,7 +11,6 @@ class User(BaseModel, Base):
     """User Class"""
 
     __tablename__ = "users"
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=Falsee)
     name = Column(String(120))
     email = Column(String(120), unique=True)
     access_token = Column(String(255))
@@ -44,4 +43,3 @@ class User(BaseModel, Base):
             'refresh_token': self.refresh_token,
             'avatar': self.avatar
         }
-    
