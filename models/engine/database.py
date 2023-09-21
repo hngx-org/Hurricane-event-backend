@@ -25,7 +25,7 @@ class DBStorage:
         DB_HOST = getenv("DB_HOST")
         DB_PORT = getenv("DB_PORT")
 
-        self.__engine = create_engine("sqlite://")
+        self.__engine = create_engine("sqlite:///sampleEVENTAPP.db")
 
     def load(self):
         """Loads data from the database to session"""
@@ -75,6 +75,24 @@ class DBStorage:
             cls = classes.get(cls)
         if cls is not None and cls in classes.values():
             return self.__session.query(cls).filter_by(id=id).first()
+
+    def getUser(self, cls: Comment | Event | Group | Image | User | str, id: str):
+        """Gets an instance of a User
+            Only use during login to verify user details
+        """
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is not None and cls in classes.values():
+            return self.__session.query(cls).filter_by(email=id).first()
+        
+    def getImages(self, cls: Comment | Event | Group | Image | User | str, id: str):
+        """
+        Get all images associated with a given comment
+        """
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is not None and cls in classes.values():
+            return self.__session.query(cls).filter_by(comment_id=id).all()
 
     def close(self):
         """Closes the session connection"""

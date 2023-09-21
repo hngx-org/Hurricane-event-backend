@@ -1,3 +1,4 @@
+
 # Routes for handling event related functionality (event creation, updating and deleting)
 
 from flask_jwt_extended import jwt_required, get_jwt_identity

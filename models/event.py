@@ -27,16 +27,16 @@ class Event(BaseModel, Base):
                          back_populates="events")
 
     def __init__(self, title: str, description: str, location: str,
-                 start_date: date, end_date: Date, start_time: datetime,
-                 end_time: datetime, thumnail: str, creator_id: str):
+                 start_date: str, end_date: str, start_time: str,
+                 end_time: str, thumnail: str, creator_id: str):
         """Initializes the event class"""
         self.title = title
         self.description = description
         self.location = location
-        self.start_date = start_date
-        self.end_date = end_date
-        self.start_time = start_time
-        self.end_time = end_time
+        self.start_date = date.fromisoformat(start_date)
+        self.end_date = date.fromisoformat(end_date)
+        self.start_time = datetime.fromisoformat(start_time)
+        self.end_time = datetime.fromisoformat(end_time)
         self.thumbnail = thumnail
         self.creator_id = creator_id
 
