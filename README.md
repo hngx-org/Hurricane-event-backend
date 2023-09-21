@@ -1,5 +1,3 @@
-Certainly, here's an improved and organized structure for your Hurricane Event Backend README:
-
 # Hurricane Event Backend
 
 This repository contains the backend code for the Hurricane Event project, which provides a RESTful API for managing events and related data on the events app.
