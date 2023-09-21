@@ -10,6 +10,7 @@ class User(BaseModel, Base):
     """User Class"""
 
     __tablename__ = "users"
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     name = Column(String(120))
     email = Column(String(120), unique=True)
     access_token = Column(String(255))
@@ -20,9 +21,10 @@ class User(BaseModel, Base):
     events = relationship("Event", secondary=interested_events,
                           back_populates="users")
 
-    def __init__(self, name: str, email: str, access_token: str,
+    def __init__(self, id: int, name: str, email: str, access_token: str,
                  refresh_token: str, avatar: str):
         """Initializes the User class"""
+        self.id = id
         self.name = name
         self.email = email
         self.access_token = access_token

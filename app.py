@@ -27,6 +27,7 @@ def hello_world():  # put application's code here
 app.register_blueprint(group_bp, url_prefix='/groups')
 app.register_blueprint(event_bp, url_prefix='/events')
 app.register_blueprint(auth, url_prefix='auth')
+app.register_blueprint(api, url_prefix='/api')
 
 if __name__ == '__main__':
     app.run(debug=1)
