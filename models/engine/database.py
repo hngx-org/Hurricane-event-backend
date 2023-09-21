@@ -84,6 +84,15 @@ class DBStorage:
             cls = classes.get(cls)
         if cls is not None and cls in classes.values():
             return self.__session.query(cls).filter_by(email=id).first()
+        
+    def getImages(self, cls: Comment | Event | Group | Image | User | str, id: str):
+        """
+        Get all images associated with a given comment
+        """
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is not None and cls in classes.values():
+            return self.__session.query(cls).filter_by(comment_id=id).all()
 
     def close(self):
         """Closes the session connection"""

@@ -104,6 +104,26 @@ This returns a single object
 <User at 232xxx>
 ```
 
+- Get comment images
+To get all the images associated with a comment, use the `storage.getImages()` method
+```python
+# Using the Class
+from models.image import Image
+...
+images = models.storage.getImages(Image, id="")
+
+# using a class name (recommended)
+user = models.storage.getImages(Image, id="")
+```
+This returns list of all image objects in JSON format
+```
+>>> print(user)
+{
+    <Image at 232xxx>
+    <Image at 434xxx>
+}
+```
+
 ### Deleting from the Database
 To delete from the database, there are two method:
 - Delete using the `storage` object
@@ -120,6 +140,68 @@ To delete from the database, there are two method:
     user = models.storage.get("User", id="")
     user.delete()
     ```
+
+### Updating the Model
+To update the instance (column), use the `update` method and pass key-value pairs (or unpack a dictionary)
+```python
+from models.user import User
+...
+user = User(name="", email="", access_token="", refresh_token="", avatar="")
+
+user.save()
+
+# To modify using key-value
+user.update(name="", email="")
+
+# To modify using dictionary
+user.update(**{"name": "", "email": ""})
+
+```
+
+### Adding a User to a group and events
+To add a user to a group, use the `groups` or `users` field
+```python
+import models
+...
+user = models.storage.get("User", id="")
+group = models.storage.get("Group", id="")
+
+user.groups.append(group)
+user.save()
+# OR
+group.users.append(user)
+group.save()
+```
+
+To add a user to an event, use the `events` or `users` field
+```python
+import models
+...
+user = models.storage.get("User", id="")
+event = models.storage.get("Event", id="")
+
+user.events.append(event)
+user.save()
+
+# OR
+event.users.append(user)
+event.save()
+```
+
+### Adding an event to a group
+```python
+import models
+...
+group = models.storage.get("Group", id="")
+event = models.storage.get("Event", id="")
+
+group.events.append(event)
+group.save()
+
+# OR
+event.groups.append(group)
+event.save()
+```
 
 *Note:* When passing class strings to the methods, ensure that it starts with a capital letter and follows the format of the class.
 Example:
