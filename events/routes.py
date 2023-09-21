@@ -12,28 +12,22 @@ something else be sure to specify it in your documentation reason you had to
 import
 """
 
-event = Blueprint('event', __name__)
-
-def format_output(comment):
-    return {
-        'id': comment.id,
-        'body': comment.body,
-        'event_id': comment.event_id
-        }
+event = Blueprint('events', __name__)
 
 """
     A GET Endpoint that returns a list of comments for an event
 """
-@event.route('/api/events/<int:event_id>/comments', methods=['GET'])
+@event.route('/events/<event_id>/comments', methods=['GET'])
 def retrieve_comments_by_event(event_id):
     try:
-        comments = Comment.query.filter(Comment.event_id == event_id).all()
+        all_comments = models.storage.all(Comment)
+        comments = [comment for comment in all_comments if comment.event_id == event_id]
         return jsonify(
                 {
-                    'success': True,
-                    'comments': [format_output(comment) for comment in comments]
+                    "event_id": event_id,
+                    'comments': [comment.json() for comment in comments]
                     }
                 )
-    except SQLAlchemy as e:
+    except Exception as e:
         models.storage.session.rollback()
-        abort(404)
+        return jsonify({"error": e}), 404
