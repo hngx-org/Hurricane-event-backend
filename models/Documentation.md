@@ -210,6 +210,10 @@ import models
 ...
 user = models.storage.search("User", email="")
 ```
+it returns a list of values
+```
+[<User at 232xxx>, ...]
+```
 
 *Note:* When passing class strings to the methods, ensure that it starts with a capital letter and follows the format of the class.
 Example:
