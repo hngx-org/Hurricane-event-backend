@@ -26,6 +26,23 @@ To run the Hurricane Event Backend locally, follow these steps:
    ```bash
    flask run
    ```
+## Models
+These are the models in the application
+* [User](models/user.py) - Defines the User Entity
+* [Comment](models/comment.py) - Comments Entity
+* [Image](models/image.py) - Defines the entity image added to Comments
+* [Event](models/event.py) - Entity that defines the events available
+* [GroupEvent](models/group_event.py) - Many to Many relationship of between Group and Event
+* [Group](models/group.py) - Entity that defines types of group available
+* [InterestedEvent](models/interested_event.py) - Many to Many relationship between User and Event
+* [UserGroup](models/user_group.py) - Many to many relationship table between User and Group
+
+## DATABASE
+The database for this project is defined in this [here](models/engine/database.py)...
+`import models`
+
+`in order to perform query operations`
+`models.storage.query(User).filter_by(email=email).first()`
 
 ## Usage
 
