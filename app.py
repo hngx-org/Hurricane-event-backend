@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from group.routes import group_bp
-from events.routes import event
+from events.routes import *
 from auth.routes import auth
 from api.routes import api
 # from config import Config
@@ -18,14 +18,16 @@ def close_database(exception):
     """Loads data into session from database"""
     models.storage.close()
 
+
 # status check
 @app.route('/')
 def hello_world():  # put application's code here
     return jsonify({"message": "Hello World!"})
 
+
 # Register the blueprints for each package here
 app.register_blueprint(group_bp, url_prefix='/groups')
-app.register_blueprint(event, url_prefix='/events')
+app.register_blueprint(event_bp, url_prefix='/events')
 app.register_blueprint(auth, url_prefix='/auth')
 app.register_blueprint(api, url_prefix='/api')
 

@@ -17,6 +17,8 @@ event_bp = Blueprint('events', __name__)
 """
     A GET Endpoint that returns a list of comments for an event
 """
+
+
 @event_bp.route('/events/<event_id>/comments', methods=['GET'])
 def retrieve_comments_by_event(event_id):
     try:
