@@ -3,7 +3,7 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request, abort
 import re
-from models import db, Event, Group
+from models import db, Event, GroupEvent
 
 event = Blueprint('event', __name__)
 
@@ -36,11 +36,7 @@ def create_event():
     if not validate_image_url(thumbnail):
         return jsonify(message='Invalid thumbnail image URL'), 400
 
-    # Check if the group exists
-    group = Group.query.get(group_id)
-    if not group:
-        return jsonify(message='Group not found'), 404
-
+    
     
     # Create a new event
     event = Event(
@@ -53,10 +49,14 @@ def create_event():
         end_time=end_time,
         thumbnail_url=thumbnail,
         user_id=current_user_id,
-        group_id=group_id     
     )
 
     db.session.add(event)
+    db.session.commit()
+
+    group_event = GroupEvent(event_id=event.id, group_id=group_id)
+
+    db.session.add(group_event)
     db.session.commit()
 
     return jsonify({'message': 'Event successfully added'}), 201
