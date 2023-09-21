@@ -97,5 +97,3 @@ For example, you can create routes to:
 - Allow users to join groups or express interest in events.
 - Add comments and images to events.
 - Retrieve event details and list events in various ways based on user interactions.
-
-
