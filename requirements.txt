@@ -18,7 +18,6 @@ Werkzeug==2.3.7
 SQLAlchemy==2.0.21
 typing_extensions==4.8.0
 Werkzeug==2.3.7
-pkg_resources
 zipp==3.17.0
 flask-user==1.0.2.2 # used for authentication of users
 # Flask user is not really used,
