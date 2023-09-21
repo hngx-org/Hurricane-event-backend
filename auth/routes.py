@@ -15,6 +15,7 @@ CLIENT_SECRET = os.environ.get('client_secret') # Secret from Google
 OAUTH2_META_URL = 'https://accounts.google.com/.well-known/openid-configuration'
 
 auth = Blueprint('auth', __name__)
+auth.config = {}  # This helps avoid the "Blueprint does not have config" error
 
 oauth = OAuth(auth)
 oauth.register(name='google',
