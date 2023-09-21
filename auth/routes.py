@@ -1,99 +1,31 @@
 # Authentication routes here
-from flask import Blueprint, redirect, url_for, jsonify, request, session, current_app
+from flask import Blueprint, jsonify, request
 import os
 from models.user import User
 from authlib.integrations.flask_client import OAuth
 import models
 from sqlalchemy.orm.exc import NoResultFound
-import jwt
-from functools import wraps
-import os
-from datetime import datetime, timedelta
+
 
 CLIENT_ID = os.environ.get('client_id') # ID gotten from Google
 CLIENT_SECRET = os.environ.get('client_secret') # Secret from Google
 OAUTH2_META_URL = 'https://accounts.google.com/.well-known/openid-configuration'
-EXP_TIME = datetime.utcnow() + timedelta(hours=1)
 
 auth = Blueprint('auth', __name__)
+auth.config = {}  # This helps avoid the "Blueprint does not have config" error
 
-oauth = OAuth(auth)
-oauth.register(name='google',
-               client_id=CLIENT_ID,
-               client_secret=CLIENT_SECRET,
-               client_kwargs={'scope': 'openid email profile'},
-               server_metadata_url=OAUTH2_META_URL,
-
-               )
-
-def token_required(func):
-    """For protected route"""
-    @wraps(func)
-    def decorated(*args, **kwargs):
-        token = request.headers.get('Authorization')
-        if not args:
-            return jsonify(error='access_token  is missing', redirect_url=url_for('login')), 401
-        try:
-            data = jwt.decode(token, current_app.secret_key)
-        except jwt.DecodeError:
-            return jsonify(error='Invalid access_token', redirect_url=url_for('login')), 401
-        except jwt.ExpiredSignatureError:
-            return jsonify(error='token has expired', redirect_url=url_for('login')), 401
-        return func(*args, **kwargs)
-
-
-@auth.route('/users/login', methods=['GET'])
-def signin():
-    return oauth.google.authorize_redirect(redirect_uri=url_for('callback', _external=True))
-
-@auth.route('/users/login/callback', methods=['GET'])
-def callback():
-    """
-    retrieves user data from google auth
-    """
-    try:
-        token = oauth.google.authorize_access_token()
-    except Exception as e:
-        return jsonify(alert='Not authorized'), 401
-    data = dict(token)
+@auth.route('users/login', methods=['POST'])
+def login():
+    data = request.json.get('payload')
     user_info = data.get('userinfo')
     email = user_info.get('email')
-    return jsonify(url=url_for('login'), method='POST', email=email), 200
 
-
-@auth.route('/users/login', methods=['POST'])
-def login():
-    """
-    checks if the email already exist: if it does returns the User data with jwt token
-
-    if it does not exist create, creates a user and session id
-    """
-
-    email = request.json.get('email')
     try:
-        user = models.storage.session.execute(models.storage.select(User).filter_by(email=email)).scalar_one()
+        user = models.storage.getUser(User, email)
     except NoResultFound:
-        return jsonify(redirect_url=url_for('signup'), error='user should be redirected'), 307
+        new_user = User(name=user_info.get('name'), email=email, avatar=user_info.get('picture'))
+        new_user.save()
+        user = models.storage.getUser(User, email)
+        return jsonify(user_id=user.id, name=user.name, email=user.email, avatar=user.avatar), 200
     else:
-        session['logged_in'] = True
-
-        token = jwt.encode({
-            'user': email,
-            'exp': EXP_TIME
-
-        },
-            current_app.secret_key, algorithm='HS256')
-
-        user.access_token = token
-        models.storage.session.commit()
-
-        return jsonify(access_token=user.access_token, name=user.name, email=user.email, response='Logged in successfully'), 200
-
-
-@auth.route('/logout', methods=['POST'])
-@token_required
-def logout():
-    session.clear()
-
-    # Redirect the user to the login page after logging out.
-    return jsonify(Response='user logged out successful', redirect_url=(url_for('login_page'))), 200
+        return jsonify(user_id=user.id, name=user.name, email=user.email, avatar=user.avatar), 200
