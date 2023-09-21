@@ -7,10 +7,6 @@ import models
 from sqlalchemy.orm.exc import NoResultFound
 
 
-CLIENT_ID = os.environ.get('client_id') # ID gotten from Google
-CLIENT_SECRET = os.environ.get('client_secret') # Secret from Google
-OAUTH2_META_URL = 'https://accounts.google.com/.well-known/openid-configuration'
-
 auth = Blueprint('auth', __name__)
 auth.config = {}  # This helps avoid the "Blueprint does not have config" error
 
