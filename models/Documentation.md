@@ -104,6 +104,26 @@ This returns a single object
 <User at 232xxx>
 ```
 
+- Get comment images
+To get all the images associated with a comment, use the `storage.getImages()` method
+```python
+# Using the Class
+from models.image import Image
+...
+images = models.storage.getImages(Image, id="")
+
+# using a class name (recommended)
+user = models.storage.getImages(Image, id="")
+```
+This returns list of all image objects in JSON format
+```
+>>> print(user)
+{
+    <Image at 232xxx>
+    <Image at 434xxx>
+}
+```
+
 ### Deleting from the Database
 To delete from the database, there are two method:
 - Delete using the `storage` object
