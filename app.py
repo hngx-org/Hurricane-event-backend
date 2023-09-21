@@ -12,6 +12,12 @@ app = Flask(__name__)
 # app.config.from_object(Config)
 # db.init_app(app)
 
+# Create a Blueprint for group-related routes
+group_bp = Blueprint('group', __name__)
+
+# Register the group blueprint
+app.register_blueprint(group_bp, url_prefix='/api
+
 
 @app.teardown_appcontext
 def close_database():
