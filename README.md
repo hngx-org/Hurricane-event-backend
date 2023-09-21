@@ -92,13 +92,13 @@ For any inquiries or questions related to the Hurricane Event Backend, please fe
 
 ### Project Team Lead
 
-- **Name:** [Your Project Team Lead Name]
-- **Email:** team.lead@example.com
-- **GitHub:** [@Project_team_lead](https://github.com/Project_team_lead)
+- **Name:** Oluseye Obitola
+- **Email:** oluseyeobitola1@gmail.com
+- **GitHub:** @Ooluseye16(https://github.com/ooluseye16)
 
 ### Backend Team Lead
 
-- **Name:** [Your Backend Team Lead Name]
-- **Email:** team.lead@example.com
-- **GitHub:** [@Project_backend_team_lead](https://github.com/Project_backend_team_lead)
+- **Name:**  Fuhad Yusuf
+- **Email:** phurhardeen@gmail.com
+- **GitHub:** @phurhard(https://github.com/phurhard)
 
