@@ -66,8 +66,8 @@ Example Request
 ```
 
 * Check the response status code
-201 == 'Group details successfully retrieved'
-404 == 'Group doesn't exist in the db.'
+    * 201 == 'Group details successfully retrieved'
+    * 404 == 'Group doesn't exist in the db.'
     
 <br>
 <br>
