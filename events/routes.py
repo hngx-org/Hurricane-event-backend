@@ -38,18 +38,17 @@ def retrieve_comments_by_event(event_id):
 def update_event(event_id):
     event = Event.query.get(event_id)
     if not event:
-        return jsonify({'message': 'Event not found'}), 401
+        return jsonify({'message': 'Event not found'}), 404
     
-    data = request.get_json()
-    event.title = data.get('title', event.title)
-    event.description = data.get('description', event.description)
-    event.location = data.get('locaton', event.location)
-    event.start_time = datetime.strptime(data.get('start_time'), '%Y-%m-%d %H:%M:%S') if data.get('start_time') else event.start_time
-    event.end_time = datetime.strptime(data.get('end_time'), '%Y-%m-%d %H:%M:%S') if data.get('end_time') else event.end_time
-
-
-    models.storage.commit()
-    return jsonify({'message': 'Event updated successfully'}), 200
-
+    try:
+        data = request.get_json()
+        event.update(**data)
+        models.storage.session.commit()
+        return jsonify({'message': 'Event updated successfully'}), 200
+    except Exception as e:
+        # Rollback the session in case of an error
+        models.storage.session.rollback()
+        return jsonify({"error": str(e)}), 400
+    
 
     
