@@ -35,6 +35,7 @@ def retrieve_comments_by_event(event_id):
         models.storage.session.rollback()
         return jsonify({"error": e}), 404
 
+<<<<<<< HEAD
 
 # Create an Endpoint that GET's the images assiociated with a comment
 @event_bp.route('/api/comments/<comment_id>/images', methods=['GET'])
@@ -53,3 +54,26 @@ def get_images_for_comment(comment_id):
     except Exception as e:
         models.storage.session.rollback()
         return jsonify({"error": str(e)}), 404
+=======
+"""
+    A DELETE Endpoint for deleting events belonging to a user by id. It also requires a 'userId'
+"""
+@event_bp.route('/events/<event_id:int>/<user_id:int>', methods=['DELETE'])
+def delete_event(event_id, user_id):
+    try:
+        event_to_be_deleted = models.storage.get("Event", id=event_id, user_id=user_id)
+        if event_to_be_deleted:
+            event_to_be_deleted.delete()
+            return jsonify({
+                "success": True,
+                "message": "Event was successfully deleted"
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "message": f"Could not delete event. No event with id -{event_id} belonging to user with id -{user_id} was found"
+            })
+    except Exception as e:
+        models.storage.session.rollback()
+        return jsonify({"error": e}), 404
+>>>>>>> 27f6950b5a224899dbfc2a8df65bd34dc9cd08d3
