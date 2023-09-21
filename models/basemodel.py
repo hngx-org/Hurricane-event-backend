@@ -15,6 +15,7 @@ class BaseModel:
 
     def __init__(self):
         """Adds the object to a new session"""
+        self.id = str(uuid4())
         models.storage.new(self)
 
     def to_dict(self):
