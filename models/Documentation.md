@@ -121,6 +121,23 @@ To delete from the database, there are two method:
     user.delete()
     ```
 
+### Updating the Model
+To update the instance (column), use the `update` method and pass key-value pairs (or unpack a dictionary)
+```python
+from models.user import User
+...
+user = User(name="", email="", access_token="", refresh_token="", avatar="")
+
+user.save()
+
+# To modify using key-value
+user.update(name="", email="")
+
+# To modify using dictionary
+user.update(**{"name": "", "email": ""})
+
+```
+
 *Note:* When passing class strings to the methods, ensure that it starts with a capital letter and follows the format of the class.
 Example:
 - "User" for User or "RandomClass" for RandomClass is correct
