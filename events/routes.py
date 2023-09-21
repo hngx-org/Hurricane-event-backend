@@ -3,7 +3,7 @@ import models # storage will be used for all db session based queries
 from models.user import User
 from models.comment import Comment
 from models.event import Event
-from models.interested_event import InterestedEvent
+# from models.interested_event import InterestedEvent
 # Routes for handling event related functionality
 # (event creation, updating and deleting)
 
@@ -12,12 +12,12 @@ something else be sure to specify it in your documentation reason you had to
 import
 """
 
-event = Blueprint('events', __name__)
+event_bp = Blueprint('events', __name__)
 
 """
     A GET Endpoint that returns a list of comments for an event
 """
-@event.route('/events/<event_id>/comments', methods=['GET'])
+@event_bp.route('/events/<event_id>/comments', methods=['GET'])
 def retrieve_comments_by_event(event_id):
     try:
         all_comments = models.storage.all(Comment)
