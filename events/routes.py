@@ -13,7 +13,6 @@ event = Blueprint('event', __name__)
 # Route that adds a comment to an event
 @event.route('/api/events/<int:event_id>/comments', methods=['POST'])
 def add_comment(event_id):
-    try:
         # Find the event
         event = Comment.query.filter(Comment.event_id == event_id).all()
         if not event:
@@ -23,7 +22,7 @@ def add_comment(event_id):
         body = request.json.get('body')
         if not body:
             return jsonify({'message': 'Comment is required'}), 400
-
+    try:
         # Create new comment object
         new_comment = Comment(id=user_id, body=body, event_id=event_id)
 
@@ -31,7 +30,7 @@ def add_comment(event_id):
         event.comments.append(new_comment)
 
         # Save changes to the database
-        #models.storage.session.add(new_comment)
+        models.storage.add(new_comment)
         models.storage.session.commit()
 
         # Return success response with the newly created comment
