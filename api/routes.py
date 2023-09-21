@@ -10,14 +10,14 @@ api = Blueprint('api', __name__)
 def users(id=None):
     if request.method == "GET":
         if id is None:
-            # GET /users: Retrieve a list of all users
+            # GET /users/profile: Retrieve a list of all users
             users = User.query.all()
             data = users.serialize()
             result = json.dumps(data, indent=4)
 
             return result, 201, {'Content-Type': 'application/json'}
         else:
-            # GET /users/{user_id}: Retrieve a specific user by ID
+            # GET /users/profile/{user_id}: Retrieve a specific user by ID
             user = User.query.get(id)
             if user:
                 data = user.serialize()
@@ -28,7 +28,7 @@ def users(id=None):
                 return jsonify(message='User not found!'), 404
 
     elif request.method == 'POST':
-        # POST /users: Create a new user
+        # POST /users/profile: Create a new user
         data = request.json
         new_user = data.get('id', 'name', 'email', 'avatar')
 
@@ -41,7 +41,7 @@ def users(id=None):
         return result, 201, {'Content-Type': 'application/json'}
 
     elif request.method == "PUT":
-        # PUT /users/{user_id}: Update an existing user
+        # PUT /users/profile/{user_id}: Update an existing user
         user = User.query.get(id)
         if user:
             # Get data
@@ -67,7 +67,7 @@ def users(id=None):
             return jsonify(message='User not found'), 404
 
     elif request.method == 'DELETE':
-        # DELETE /users/{user_id}: Delete a user
+        # DELETE /users/profile/{user_id}: Delete a user
         user = User.query.get(id)
         if user:
             db.session.delete(user)
