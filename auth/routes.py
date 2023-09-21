@@ -32,13 +32,13 @@ def token_required(func):
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization')
         if not args:
-            return jsonify(error='access_token  is missing'), 401
+            return jsonify(error='access_token  is missing', redirect_url=url_for('login')), 401
         try:
             data = jwt.decode(token, current_app.secret_key)
         except jwt.DecodeError:
-            return jsonify(error='Invalid access_token '), 403
+            return jsonify(error='Invalid access_token', redirect_url=url_for('login')), 401
         except jwt.ExpiredSignatureError:
-            return jsonify(error='token has expired', redirect_to=url_for('login')), 401
+            return jsonify(error='token has expired', redirect_url=url_for('login')), 401
         return func(*args, **kwargs)
 
 
@@ -73,7 +73,7 @@ def login():
     try:
         user = models.storage.session.execute(models.storage.select(User).filter_by(email=email)).scalar_one()
     except NoResultFound:
-        return redirect(url_for('signup')), 307
+        return jsonify(redirect_url=url_for('signup'), error='user should be redirected'), 307
     else:
         session['logged_in'] = True
 
@@ -88,3 +88,12 @@ def login():
         models.storage.session.commit()
 
         return jsonify(access_token=user.access_token, name=user.name, email=user.email, response='Logged in successfully'), 200
+
+
+@auth.route('/logout', methods=['POST'])
+@token_required
+def logout():
+    session.clear()
+
+    # Redirect the user to the login page after logging out.
+    return jsonify(Response='user logged out successful', redirect_url=(url_for('login_page'))), 200
