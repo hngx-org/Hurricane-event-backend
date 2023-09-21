@@ -50,7 +50,7 @@ Before using these authentication routes, make sure to set the following environ
 - Function: `token_required(func)`
 - Usage: Apply this decorator to any route function that should only be accessible to authenticated users. It checks for the presence and validity of an access token.
   `GET /some-protected-route
-headers={Access_token: your_access_token_here}
+headers={Authorization: your_access_token_here}
 `
 ## Usage
 

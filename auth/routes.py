@@ -8,11 +8,12 @@ from sqlalchemy.orm.exc import NoResultFound
 import jwt
 from functools import wraps
 import os
-
+from datetime import datetime, timedelta
 
 CLIENT_ID = os.environ.get('client_id') # ID gotten from Google
 CLIENT_SECRET = os.environ.get('client_secret') # Secret from Google
 OAUTH2_META_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+EXP_TIME = datetime.utcnow() + timedelta(hours=1)
 
 auth = Blueprint('auth', __name__)
 
@@ -29,13 +30,15 @@ def token_required(func):
     """For protected route"""
     @wraps(func)
     def decorated(*args, **kwargs):
-        token = request.headers.get('access_token')
+        token = request.headers.get('Authorization')
         if not args:
-            return jsonify(Response='access_token  is missing'), 401
+            return jsonify(error='access_token  is missing'), 401
         try:
             data = jwt.decode(token, current_app.secret_key)
         except jwt.DecodeError:
-            return jsonify(response='Invalid access_token '), 403
+            return jsonify(error='Invalid access_token '), 403
+        except jwt.ExpiredSignatureError:
+            return jsonify(error='token has expired', redirect_to=url_for('login')), 401
         return func(*args, **kwargs)
 
 
@@ -63,12 +66,12 @@ def login():
     """
     checks if the email already exist: if it does returns the User data with jwt token
 
-    if it does not exist redirect back to signup
+    if it does not exist create, creates a user and session id
     """
 
     email = request.json.get('email')
     try:
-        user = models.storage.getUser(User, email)
+        user = models.storage.session.execute(models.storage.select(User).filter_by(email=email)).scalar_one()
     except NoResultFound:
         return redirect(url_for('signup')), 307
     else:
@@ -76,44 +79,12 @@ def login():
 
         token = jwt.encode({
             'user': email,
+            'exp': EXP_TIME
+
         },
-            current_app.secret_key)
+            current_app.secret_key, algorithm='HS256')
 
         user.access_token = token
-        models.storage.save()
+        models.storage.session.commit()
 
         return jsonify(access_token=user.access_token, name=user.name, email=user.email, response='Logged in successfully'), 200
-
-"""Sign out / Log out"""
-
-# This secret key should be kept secret and should match the one used for JWT encoding.
-SECRET_KEY = 'your_secret_key'
-
-# Simulated database to store logged-in users and their tokens (in-memory for simplicity).
-# In a real application, you'd use a proper database.
-logged_in_users = {}
-
-@auth.route('/logout', methods=['POST'])
-def logout():
-    # Get the JWT token from the request headers.
-    token = request.headers.get('Authorization')
-
-    if not token:
-        return 'No token provided', 401
-
-    # Verify the token to ensure it's valid.
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        return 'Expired Token', 401
-    except jwt.DecodeError:
-        return 'Invalid token', 401
-
-    # Check if the user is logged in.
-    user_id = payload.get('user_id')
-    if user_id in logged_in_users:
-        # Remove the user from the logged-in users list (logout).
-        del logged_in_users[user_id]
-
-    # Redirect the user to the login page after logging out.
-    return redirect(url_for('login_page'))
