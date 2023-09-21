@@ -1,9 +1,9 @@
-from flask import Blueprint, abort, jsonify
+from flask import Blueprint, abort, jsonify, request
 import models # storage will be used for all db session based queries
 from models.user import User
 from models.comment import Comment
 from models.event import Event
-from models.interested_event import InterestedEvent
+from datetime import datetime
 # Routes for handling event related functionality
 # (event creation, updating and deleting)
 
@@ -12,12 +12,12 @@ something else be sure to specify it in your documentation reason you had to
 import
 """
 
-event = Blueprint('events', __name__)
+event_bp = Blueprint('events', __name__)
 
 """
     A GET Endpoint that returns a list of comments for an event
 """
-@event.route('/events/<event_id>/comments', methods=['GET'])
+@event_bp.route('/events/<event_id>/comments', methods=['GET'])
 def retrieve_comments_by_event(event_id):
     try:
         all_comments = models.storage.all(Comment)
@@ -31,3 +31,25 @@ def retrieve_comments_by_event(event_id):
     except Exception as e:
         models.storage.session.rollback()
         return jsonify({"error": e}), 404
+"""
+    An Enpoint for updating users events
+"""
+@event_bp.route('/events/<int:event_id>', method=['PUT'])
+def update_event(event_id):
+    event = Event.query.get(event_id)
+    if not event:
+        return jsonify({'message': 'Event not found'}), 401
+    
+    data = request.get_json()
+    event.title = data.get('title', event.title)
+    event.description = data.get('description', event.description)
+    event.location = data.get('locaton', event.location)
+    event.start_time = datetime.strptime(data.get('start_time'), '%Y-%m-%d %H:%M:%S') if data.get('start_time') else event.start_time
+    event.end_time = datetime.strptime(data.get('end_time'), '%Y-%m-%d %H:%M:%S') if data.get('end_time') else event.end_time
+
+
+    models.storage.commit()
+    return jsonify({'message': 'Event updated successfully'}), 200
+
+
+    
