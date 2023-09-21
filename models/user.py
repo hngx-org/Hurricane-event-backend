@@ -11,7 +11,7 @@ class User(BaseModel, Base):
     """User Class"""
 
     __tablename__ = "users"
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=Falsee)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
     name = Column(String(120))
     email = Column(String(120), unique=True)
     access_token = Column(String(255))

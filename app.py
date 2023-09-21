@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from group.routes import group_bp
 from events.routes import event_bp
 from auth.routes import auth
+from api.routes import api
 # from config import Config
 # from db_connection.connection import db
 import models
@@ -29,4 +30,4 @@ app.register_blueprint(auth, url_prefix='auth')
 app.register_blueprint(api, url_prefix='/api')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
