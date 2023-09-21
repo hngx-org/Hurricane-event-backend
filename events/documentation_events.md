@@ -34,3 +34,30 @@ The base URL for this API is `/event`. All endpoints described below are relativ
     ]
 }
 ```
+
+
+###  Get Images for a Comment
+- **Route**: `GET /api/comments/<comment_id>/images`
+- **Description**: Retrieve images associated with a specific comment.
+- **Request Parameters**:
+  - `comment_id` (URL parameter): The unique identifier for the comment.
+- **Response**:
+  - **Success (HTTP Status 200 OK)**:
+    - JSON response with images for the specified comment.
+    ```json
+    {
+        "comment_id": "<comment_id>",
+        "images": [
+            "https://example.com/image1.jpg",
+            "https://example.com/image2.jpg",
+            ...
+        ]
+    }
+    ```
+  - **Error (HTTP Status 404 Not Found)**:
+    - If the specified comment does not exist:
+      ```json
+      {
+          "error": "Comment not found"
+      }
+      ```
