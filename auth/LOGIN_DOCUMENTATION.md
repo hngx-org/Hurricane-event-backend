@@ -19,28 +19,78 @@ Before using these authentication routes, make sure to set the following environ
 
 ### Signin (`/users/login` - GET)
 
-- Description: Initiates the Google OAuth2 authentication process.
-- Endpoint: `/users/login`
-- Method: GET
-- Returns: Redirects the user to the Google authentication page.
+- **Description**: Initiates the Google OAuth2 authentication process.
+- **Endpoint**: `/users/login`
+- **Method**: GET
+- **Returns**: Redirects the user to the Google authentication page.
 
 ### Callback (`/users/login/callback` - GET)
 
-- Description: Handles the callback from Google after successful authentication.
-- Endpoint: `/users/login/callback`
-- Method: GET
-- Returns: User information (email) in JSON format, along with a URL for POST login.
+- **Description**: Handles the callback from Google after successful authentication.
+- **Endpoint**: `/users/login/callback`
+- **Method**: GET
+- **Returns**: User information (email) in JSON format, along with a URL for POST login.
+
 
 ### Login (`/users/login` - POST)
 
-- Description: Handles user login. Checks if the email already exists in the database, and creates an access token.
-- Endpoint: `/users/login`
-- Method: POST
-- request body(JSON):
+- **Description**: Handles user login. Checks if the email already exists in the database, and creates an access token.
+- **Endpoint**: `/users/login`
+- **Method**: POST
+- **request body(JSON)**:
   - `email`: User's email address.
-  - `name`: User's name.
-  - `picture`: URL of the user's profile picture.
-- Returns: User information (access token, name, email) in JSON format. If a new user is created, returns a 201 status code.
+
+  `{
+    "email": "user@example.com",
+   }`
+ 
+
+- **Response**: User information (access token, name, email) in JSON format. If a user exist, returns a 200 status code.
+    * **if user exists**:
+        * **status code**: 200
+      
+        ``` 
+      {
+            "email": "user@example.com",
+            "access_token": 'token',
+            "name": "name of user",
+            "response": "Logged in successfully"
+        }
+    * **else**:
+        * **status code**: 307
+      
+        ```
+      {
+            "redirect_url": '/users/signup",
+            "error": "user should be redirected"
+        }
+
+# Logout Endpoint Documentation
+
+## Introduction
+
+The `users/logout` endpoint in this Flask application allows authenticated users to log out by ending their session. This documentation provides an overview of how to use the endpoint.
+
+## Endpoint Details
+
+- **Endpoint:** `users/logout`
+- **Method:** POST
+- **Authentication Required:** Yes (Requires a valid access token)
+- **Response:** JSON response indicating a successful logout.
+
+## Usage
+
+To log out a user, follow these steps:
+
+1. Ensure you have a valid access token.
+   - You should include the access token in the `Authorization` header of your POST request.
+
+2. Send a POST request to the `users/logout` endpoint.
+
+   ```http
+   POST /logout
+   Host: your-api-host.com
+   Authorization: your-access-token
 
 ## Middleware
 
@@ -61,62 +111,41 @@ To use these authentication routes, follow these steps:
 3. Apply the `token_required` decorator to any route that requires authentication.
 4. Use the `/users/login` route to initiate the authentication process.
 
-Example usage can be found in the provided code.
+## Error Responses
+
+The `token_required` decorator provides error responses in case of various token-related issues:
+
+### Missing Access Token
+
+- **Error:** `access_token is missing`
+- **Status Code:** 401 (Unauthorized)
+- **Response:**
+
+  ```json
+  {
+      "error": "access_token is missing",
+      "redirect_url": "URL for the login page"
+  }
+
+### Invalid Access Token
+- **Error:** `invalid access_token`
+- **Status Code:** 401 (Unauthorized)
+- **Response:**
+
+  ```json
+  {
+      "error": "invalid access_token",
+      "redirect_url": "URL for the login page"
+  }
 
 
+### Expired token
+- **Error:** `token has expired`
+- **Status Code:** 401 (Unauthorized)
+- **Response:**
 
-### LOG-OUT DOCUMENTATION
-
-User Logout Endpoint Documentation
-Description
-The /api/logout endpoint is used to log a user out of their session by invalidating the JWT (JSON Web Token) token provided in the request header. This action effectively revokes the user's access to protected resources until they log in again.
-
-Endpoint URL
-
-POST /api/logout
-
-Request Format
-
-Headers
-Authorization (Required): Include a valid JWT token(JSON web token) as a Bearer token in the Authorization header.
-
-Responses
-Success Response (HTTP Status 302 - Redirect)
-Status Code: 302
-Response Body: None
-Description: If the provided JWT token(JSON web token) is valid and associated with a logged-in user, they will be logged out. The endpoint will then redirect the user to the login page specified by the login_page route.
-
-Error Responses
-Status Code: 401
-Response Body: A text message indicating the reason for the error.
-Description:
-No token provided: If the Authorization header is missing from the request.
-Token has expired: If the provided JWT token has expired.
-Invalid token: If the provided JWT token is invalid, such as having an incorrect signature.
-
-Example Usage
-
-import requests
-
-# Define the URL of the logout endpoint
-logout_url = 'http://localhost:5000/auth/logout'
-
-# Provide a valid JWT token in the Authorization header
-headers = {'Authorization': 'Bearer YOUR_VALID_JWT_TOKEN'}
-
-# Send a POST request to log the user out
-response = requests.post(logout_url, headers=headers)
-
-# Check the response status code
-if response.status_code == 302:
-    print('Logout successful. User is redirected to the login page.')
-else:
-    print(f'Logout failed. Error message: {response.text}')
-
-    security
-
-    Keep the SECRET_KEY used for JWT token encoding secret and secure. It should never be exposed or shared publicly.
-
-    Author: Idris Adebayo
-    email: adebayoidris051@gmail.com.
-   github: Ade3164
+  ```json
+  {
+      "error": "token has expired",
+      "redirect_url": "URL for the login page"
+  }
