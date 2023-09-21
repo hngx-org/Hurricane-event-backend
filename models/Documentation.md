@@ -158,6 +158,51 @@ user.update(**{"name": "", "email": ""})
 
 ```
 
+### Adding a User to a group and events
+To add a user to a group, use the `groups` or `users` field
+```python
+import models
+...
+user = models.storage.get("User", id="")
+group = models.storage.get("Group", id="")
+
+user.groups.append(group)
+user.save()
+# OR
+group.users.append(user)
+group.save()
+```
+
+To add a user to an event, use the `events` or `users` field
+```python
+import models
+...
+user = models.storage.get("User", id="")
+event = models.storage.get("Event", id="")
+
+user.events.append(event)
+user.save()
+
+# OR
+event.users.append(user)
+event.save()
+```
+
+### Adding an event to a group
+```python
+import models
+...
+group = models.storage.get("Group", id="")
+event = models.storage.get("Event", id="")
+
+group.events.append(event)
+group.save()
+
+# OR
+event.groups.append(group)
+event.save()
+```
+
 *Note:* When passing class strings to the methods, ensure that it starts with a capital letter and follows the format of the class.
 Example:
 - "User" for User or "RandomClass" for RandomClass is correct
