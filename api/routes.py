@@ -5,8 +5,8 @@ from models.user import *
 api = Blueprint('api', __name__)
 
 
-@api.route('/users', methods=['GET', 'POST'])
-@api.route('/users/<string:id>', methods=['GET', 'PUT', 'DELETE'])
+@api.route('/users/profile', methods=['GET', 'POST'])
+@api.route('/users/profile/<string:id>', methods=['GET', 'PUT', 'DELETE'])
 def users(id=None):
     if request.method == "GET":
         if id is None:
