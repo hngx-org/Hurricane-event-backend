@@ -15,7 +15,7 @@ def authenticate_user():
     avatar = data.get("avatar")
 
     if email:
-        users = models.search("User", email=email)
+        users = models.storage.search("User", email=email)
         if users:
             user = users[0]
         else:
@@ -31,13 +31,32 @@ def authenticate_user():
 @api_views.route("/users/<user_id>")
 def get_profile(user_id):
     """Returns a user resource"""
-    pass
+    user = models.storage.get("User", user_id)
+    if user:
+        return jsonify(user.to_dict())
+    return jsonify({"message": "User ID does not exist"}), 404
 
 
 @api_views.route("/users/<user_id>", methods=["PUT"])
 def update_profile(user_id):
     """Updates a user resource"""
-    pass
+    user = models.storage.get("User", user_id)
+    if user:
+        data = request.get_json()
+        name = data.get("name")
+        email = data.get("email")
+        avatar = data.get("avatar")
+
+        kwargs = {"name": name, "email": email, "avatar": avatar}
+        for key, value in kwargs.copy().items():
+            if not value:
+                kwargs.pop(key)
+        if kwargs:
+            user.update(**kwargs)
+            user.save()
+            return jsonify({"message": "Update was successful"}), 202
+        return jsonify({"message": "Unchanged"}), 200
+    return jsonify({"message": "User ID does not exist"}), 404
 
 
 @api_views.route("/users/<user_id>/interests/<event_id>",
