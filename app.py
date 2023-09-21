@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from events.routes import comment_likes_bp  # Importing the Blueprint from where I've defined it
 # I imported jsonify so that the output of the status will be of better formatting
 from group.routes import group_bp
 from events.routes import event_bp
@@ -8,6 +9,9 @@ from auth.routes import auth
 import models
 
 app = Flask(__name__)
+
+# Register the Blueprint with the Flask app
+app.register_blueprint(comment_likes_bp)
 
 # app.config.from_object(Config)
 # db.init_app(app)
