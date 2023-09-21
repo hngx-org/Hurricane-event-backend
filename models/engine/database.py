@@ -84,7 +84,7 @@ class DBStorage:
             cls = classes.get(cls)
         if cls is not None and cls in classes.values():
             return self.__session.query(cls).filter_by(email=id).first()
-        
+
     def getImages(self, cls: Comment | Event | Group | Image | User | str, id: str):
         """
         Get all images associated with a given comment
@@ -111,3 +111,11 @@ class DBStorage:
     def obj_delete(self, obj: Comment | Event | Group | Image | User):
         """Deletes an instance of the model from the database"""
         self.__session.delete(obj)
+
+    def search(self, cls: Comment | Event | Group | Image | User | str,
+               **fields):
+        """Searches a Model using parameters"""
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is not None and cls in classes.values():
+            return self.__session.query(cls).filter_by(**fields).all()
