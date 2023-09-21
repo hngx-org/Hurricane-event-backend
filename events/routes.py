@@ -4,6 +4,7 @@ from models.user import User
 from models.comment import Comment
 from models.event import Event
 from datetime import datetime
+# from models.interested_event import InterestedEvent
 # Routes for handling event related functionality
 # (event creation, updating and deleting)
 
@@ -51,4 +52,24 @@ def update_event(event_id):
         return jsonify({"error": str(e)}), 400
     
 
-    
+"""
+    A DELETE Endpoint for deleting events belonging to a user by id. It also requires a 'userId'
+"""
+@event_bp.route('/events/<event_id:int>/<user_id:int>', methods=['DELETE'])
+def delete_event(event_id, user_id):
+    try:
+        event_to_be_deleted = models.storage.get("Event", id=event_id, user_id=user_id)
+        if event_to_be_deleted:
+            event_to_be_deleted.delete()
+            return jsonify({
+                "success": True,
+                "message": "Event was successfully deleted"
+            })
+        else:
+            return jsonify({
+                "success": False,
+                "message": f"Could not delete event. No event with id -{event_id} belonging to user with id -{user_id} was found"
+            })
+    except Exception as e:
+        models.storage.session.rollback()
+        return jsonify({"error": e}), 404

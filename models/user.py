@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from models.basemodel import BaseModel, Base
 from models.group import user_groups
 from models.event import interested_events
+import uuid
 
 
 class User(BaseModel, Base):
@@ -30,3 +31,14 @@ class User(BaseModel, Base):
         self.avatar = avatar
 
         super().__init__()
+
+    # Serialize
+    def serialize(self):
+        return {
+            'id': str(self.id),
+            'name': self.name,
+            'email': self.email,
+            'access_token': self.access_token,
+            'refresh_token': self.refresh_token,
+            'avatar': self.avatar
+        }
