@@ -35,7 +35,7 @@ def retrieve_comments_by_event(event_id):
 """
     A DELETE Endpoint for deleting events belonging to a user by id. It also requires a 'userId'
 """
-@event.route('api/events/<event_id:int>/<user_id:int>', methods=['DELETE'])
+@event_bp.route('/events/<event_id:int>/<user_id:int>', methods=['DELETE'])
 def delete_event(event_id, user_id):
     try:
         event_to_be_deleted = models.storage.get("Event", id=event_id, user_id=user_id)
