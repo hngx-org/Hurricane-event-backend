@@ -1,14 +1,20 @@
 import unittest
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from models.user import User
 from models.comment import Comment
 from models.event import Event
 from models.group import Group
-from models.Image import Image
+from models.image import Image
 import models
 
 class TestORM(unittest.TestCase):
 
     def set_up(self):
-        self.app = create_app(config_name="testing")
+        #setting up the test environment properly :)
+        self.app = Flask(__name__)
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'our_test_database.db' # test db uri goes here :)
+        db = SQLAlchemy(self.app) # init sqlalchemy, db defined :)
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
@@ -20,7 +26,7 @@ class TestORM(unittest.TestCase):
 
     def test_create_objects(self):
 
-        user = user = User(name="test", email="", access_token="", refresh_token="", avatar="")# where do i get these tokens man :(
+        user = User(name="test", email="test@gmail.com", avatar="")
         user.save()
         self.assertIsNotNone(user.id) # just to make sure user has an id :)
 
@@ -29,7 +35,16 @@ class TestORM(unittest.TestCase):
         self.assertIsNotNone(user.id) # again, just to make sure comment has an id :) 
         self.assertIsNotNone(event.id) # again, just to make sure comment has an id :) 
 
-        event = event = Event(title="", description="", location="", start_date="", end_date="", start_time="", end_time="", thumnail="", creator_id="")
+        event = Event(
+            title="Sample Event",
+            description="Event Description",
+            location="Event Location",
+            start_date=date(2023, 9, 21),
+            end_date=date(2023, 9, 22),
+            start_time=time(10, 0),
+            end_time=time(12, 0),
+            creator_id=user.id,  # Set the creator_id to the user's ID
+        )
         event.save()
         self.assertIsNotNone(event.id) # same  reason as other two above :)
         self.assertIsNotNone(creator.id)
@@ -44,7 +59,7 @@ class TestORM(unittest.TestCase):
 
     def test_query_database(self):
         # Test querying the database for objects
-        user = User(name="Alice", email="alice@example.com")
+        user = User(name="test", email="test@example.com")
         user.save()
 
         # Test getting all objects
