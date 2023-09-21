@@ -27,15 +27,53 @@ To run the Hurricane Event Backend locally, follow these steps:
    flask run
    ```
 
+The list you provided is a good start, but it could be more informative and complete. Here's an expanded and more detailed version:
+
 ## Usage
 
-The Hurricane Event Backend provides a set of API endpoints for managing events and related data in the events app. Some of the key API endpoints include:
+The Hurricane Event Backend provides a comprehensive set of API endpoints to facilitate the management of events and related data in the events app. Below are some key API endpoints and their corresponding functionalities:
 
-- `/api/events`: Retrieve and manage events.
-- `/api/users`: Manage user accounts.
-- `/api/locations`: Manage event locations.
-- `/api/categories`: Manage event categories.
-- ...
+### Event Management
+
+- **Retrieve Events:**
+  - `GET /api/events`: Fetch a list of events with optional filters (e.g., date, location, category).
+  - `GET /api/events/{event_id}`: Retrieve detailed information about a specific event by its unique identifier.
+
+- **Create, Update, and Delete Events:**
+  - `POST /api/events`: Create a new event by providing event details.
+  - `PUT /api/events/{event_id}`: Update an existing event's information.
+  - `DELETE /api/events/{event_id}`: Remove an event from the system.
+
+### User Account Management
+
+- **User Registration and Authentication:**
+  - `POST /api/users/register`: Register a new user account by providing necessary details (e.g., username, email, password).
+  - `POST /api/users/login`: Authenticate a user and obtain an access token for subsequent API requests.
+  - `POST /api/users/logout`: Log out and invalidate the access token.
+
+- **User Profile Management:**
+  - `GET /api/users/{user_id}`: Retrieve user profile information.
+  - `PUT /api/users/{user_id}`: Update user profile information (e.g., name, email, password).
+
+### Event Location Management
+
+- **Retrieve and Manage Locations:**
+  - `GET /api/locations`: Fetch a list of event locations.
+  - `GET /api/locations/{location_id}`: Retrieve detailed information about a specific location.
+  - `POST /api/locations`: Create a new event location.
+  - `PUT /api/locations/{location_id}`: Update information about an existing location.
+  - `DELETE /api/locations/{location_id}`: Remove a location from the system.
+
+### Event Category Management
+
+- **Retrieve and Manage Categories:**
+  - `GET /api/categories`: Fetch a list of event categories.
+  - `GET /api/categories/{category_id}`: Retrieve detailed information about a specific category.
+  - `POST /api/categories`: Create a new event category.
+  - `PUT /api/categories/{category_id}`: Update information about an existing category.
+  - `DELETE /api/categories/{category_id}`: Remove a category from the system.
+
+This is a more comprehensive overview of the key API endpoints and their respective functionalities within the Hurricane Event Backend. It should help users and developers better understand how to interact with the API. Remember to include any additional endpoints or functionalities specific to your application.
 
 For detailed documentation on these API endpoints and their usage, please refer to the [DOCUMENTATION.md](DOCUMENTATION.md) file.
 
