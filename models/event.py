@@ -25,7 +25,8 @@ class Event(BaseModel, Base):
                           back_populates="events")
     users = relationship("User", secondary=interested_events,
                          back_populates="events")
-    image = relationship("Image", secondary=event_thumnail, uselist=False)
+    image = Column(String(60), nullable=True)
+    # image = relationship("Image", secondary=event_thumnail, uselist=False)
 
     def __init__(self, title: str, description: str, location: str,
                  start_date: str, end_date: str, start_time: str,
