@@ -12,7 +12,6 @@ app = Flask(__name__)
 # app.config.from_object(Config)
 # db.init_app(app)
 
-
 @app.teardown_appcontext
 def close_database(exception):
     """Loads data into session from database"""
