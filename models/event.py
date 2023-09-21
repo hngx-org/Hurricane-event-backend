@@ -1,7 +1,7 @@
 """Model for Event table"""
 from datetime import date, time
 from sqlalchemy import Column, String, Date, Time
-from sqlalchemy import ForeignKey, Table
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from models.basemodel import BaseModel, Base
 from models.group_event import group_events
@@ -36,8 +36,8 @@ class Event(BaseModel, Base):
         self.location = location
         self.start_date = date.fromisoformat(start_date)
         self.end_date = date.fromisoformat(end_date)
-        self.start_time = datetime.fromisoformat(start_time)
-        self.end_time = datetime.fromisoformat(end_time)
+        self.start_time = time.fromisoformat(start_time)
+        self.end_time = time.fromisoformat(end_time)
         self.thumbnail = thumnail
         self.creator_id = creator_id
 
