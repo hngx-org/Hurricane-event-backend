@@ -1,12 +1,7 @@
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from models.group import Group
 
 app = Flask(__name__)
-
-db = SQLAlchemy(app)
-
-class Group:
-    pass
 
 MAX_NO_OF_IMAGES = 2
 
