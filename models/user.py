@@ -10,7 +10,7 @@ class User(BaseModel, Base):
     """User Class"""
 
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=Falsee)
     name = Column(String(120))
     email = Column(String(120), unique=True)
     access_token = Column(String(255))
@@ -24,7 +24,7 @@ class User(BaseModel, Base):
     def __init__(self, id: int, name: str, email: str, access_token: str,
                  refresh_token: str, avatar: str):
         """Initializes the User class"""
-        self.id = id
+        self.id = uuid.uuid4()
         self.name = name
         self.email = email
         self.access_token = access_token
