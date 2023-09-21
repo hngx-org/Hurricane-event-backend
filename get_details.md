@@ -19,7 +19,9 @@ Group doesn't exist: This error occurs when the given group_id doesn't match an 
 
 
 Example Request
-curl --location '/api/groups/<group_id>'
+```
+    curl --location '/api/groups/<group_id>'
+```
 
 ## Example Response
 ```
@@ -65,10 +67,13 @@ curl --location '/api/groups/<group_id>'
 
 ### Check the response status code
 if response.status_code == 201:<br>
-    print('Group details successfully retrieved')
+> print('Group details successfully retrieved')
 elif response.status_code == 404:<br>
-    print('Group doesn't exist in the db.')
+> print('Group doesn't exist in the db.')
+    
+<br>
 <br>
 
-<p>Author: [Zainab Wuraola Mahmud](https://github.com/zee467)<br>
+<p>Author: [Zainab Wuraola Mahmud](https://github.com/zee467)
+    <br>
 Email: wura.mahmud@gmail.com</p>
