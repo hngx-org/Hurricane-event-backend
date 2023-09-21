@@ -36,3 +36,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# Files
+sampleEVENTAPP.db
