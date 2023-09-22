@@ -3,7 +3,6 @@ import models
 from . import api_views
 from models.group import Group
 
-
 @api_views.route("/groups", methods=["POST"])
 def create_group():
     """Creates a new group"""
@@ -105,3 +104,4 @@ def remove_user(group_id, user_id):
         group.users.remove(user)
         group.save()
     return jsonify({"message": "success"})
+
