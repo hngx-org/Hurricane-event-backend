@@ -11,7 +11,7 @@ def create_group():
 
     # Check if 'title' is provided in the JSON data
     if 'title' not in data:
-        return jsonify({'error': 'Title is required'}), 400
+        return jsonify({'message': 'Title is required'}), 400
 
     title = data['title']
 
@@ -20,7 +20,7 @@ def create_group():
     title_exists = [group for group in all_groups if group.title == title]
 
     if title_exists:
-        return jsonify({'error': 'Title already exists'}) 
+        return jsonify({'message': 'Group already exists'}) 
 
     # Add the new group to the database session
 
@@ -33,8 +33,7 @@ def create_group():
     except Exception as e:
         # Handle database errors
         # models.storage.rollback()
-        return jsonify({'error': str(e)}), 500
-
+        return jsonify({'message': str(e)}), 500
 
 @api_views.route("/groups/<group_id>")
 def get_group(group_id):
