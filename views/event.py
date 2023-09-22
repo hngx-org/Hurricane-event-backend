@@ -99,22 +99,14 @@ def delete_event(event_id):
         return jsonify({"message": "success"})
     return jsonify({"message": "Resource UID not found"}), 404
 
+
 @api_views.route("/events/<user_id>/events")
 def interested_events(user_id):
     '''Gets all events a user is interested in'''
     user = models.storage.get("User", user_id)
     if user is None:
-        return jsonify({'error', 'User not found'}), 404
+        return jsonify({'message': 'User not found'}), 404
     interested_events = user.events
 
-    events = [{'title': event.title,
-              'description': event.description,
-              'location': event.location,
-              'start_date': event.start_date,
-              'end_date': event.end_date,
-              'start_time': event.start_time,
-              'end_time': event.end_time,
-              'thumbnail': event.thumbnail,
-              'creator_id': event.creator_id
-              } for event in interested_events]
-    return jsonify({'user': user.name, 'events': events}), 200
+    events = [event.to_dict() for event in interested_events]
+    return jsonify({'user': user.name, 'events': events})

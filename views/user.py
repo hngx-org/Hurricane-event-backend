@@ -63,11 +63,31 @@ def update_profile(user_id):
                  methods=["POST"])
 def express_interest(user_id, event_id):
     """Adds an event to user resource"""
-    pass
+    user = models.storage.get("User", user_id)
+    event = models.storage.get("Event", event_id)
+    if not user:
+        return jsonify({"message": "Invalid User ID"}), 404
+    if not event:
+        return jsonify({"message": "Invalid Event ID"}), 404
+
+    if event not in user.events:
+        user.events.append(event)
+        user.save()
+    return jsonify({"message": "success"})
 
 
 @api_views.route("/users/<user_id>/interests/<event_id>",
                  methods=["DELETE"])
 def remove_interest(user_id, event_id):
     """Removes an event from user resource"""
-    pass
+    user = models.storage.get("User", user_id)
+    event = models.storage.get("Event", event_id)
+    if not user:
+        return jsonify({"message": "Invalid User ID"}), 404
+    if not event:
+        return jsonify({"message": "Invalid Event ID"}), 404
+
+    if event in user.events:
+        user.events.remove(event)
+        user.save()
+    return jsonify({"message": "success"})

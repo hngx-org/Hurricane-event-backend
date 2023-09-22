@@ -85,8 +85,9 @@ def add_user(group_id, user_id):
         return jsonify({"message": "Invalid User ID"}), 404
     if not group:
         return jsonify({"message": "Invalid Group ID"}), 404
-    group.users.append(user)
-    group.save()
+    if user not in group.users:
+        group.users.append(user)
+        group.save()
     return jsonify({"message": "success"})
 
 
@@ -99,7 +100,8 @@ def remove_user(group_id, user_id):
     if not user:
         return jsonify({"message": "Invalid User ID"}), 404
     if not group:
-        return jsonify({"message": "Invalid User ID"}), 404
-    group.users.remove(user)
-    group.save()
+        return jsonify({"message": "Invalid Group ID"}), 404
+    if user in group.users:
+        group.users.remove(user)
+        group.save()
     return jsonify({"message": "success"})
