@@ -14,12 +14,12 @@ something else be sure to specify it in your documentation reason you had to
 import
 """
 
-event_bp = Blueprint('events', __name__)
+event = Blueprint('events', __name__)
 
 """
     A GET Endpoint that returns a list of comments for an event
 """
-@event_bp.route('/events/<event_id>/comments', methods=['GET'])
+@event.route('/events/<event_id>/comments', methods=['GET'])
 def retrieve_comments_by_event(event_id):
     try:
         all_comments = models.storage.all(Comment)
@@ -36,7 +36,7 @@ def retrieve_comments_by_event(event_id):
 """
     An Enpoint for updating users events
 """
-@event_bp.route('/events/<event_id>', method=['PUT'])
+@event.route('/events/<event_id>', method=['PUT'])
 def update_event(event_id):
     event = Event.query.get(event_id)
     if not event:
@@ -56,7 +56,7 @@ def update_event(event_id):
 """
     A DELETE Endpoint for deleting events belonging to a user by id. It also requires a 'userId'
 """
-@event_bp.route('/events/<event_id:int>/<user_id:int>', methods=['DELETE'])
+@event.route('/events/<event_id:int>/<user_id:int>', methods=['DELETE'])
 def delete_event(event_id, user_id):
     try:
         event_to_be_deleted = models.storage.get("Event", id=event_id, user_id=user_id)
