@@ -7,12 +7,10 @@ class Image(BaseModel, Base):
     """Image class"""
 
     __tablename__ = "images"
-    image_url = Column(String(255))
-    comment_id = Column(String(60), ForeignKey("comments.id"))
+    url = Column(String(255))
 
     def __init__(self, image_url: str, comment_id: str):
         """Initializes the image object"""
-        self.image_url = image_url
-        self.comment_id = comment_id
+        self.url = image_url
 
         super().__init__()

@@ -71,3 +71,5 @@ def get_user_groups(userid):
 
     return jsonify({'user_id': userid, 'groups': group_list}), 200
 
+         
+
