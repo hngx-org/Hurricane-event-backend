@@ -18,7 +18,6 @@ def not_json(exception):
     return jsonify({"message": "Media Type is not JSON"}), 415
 
 
-
 @app.errorhandler(500)
 def internal_server_error(e):
     return jsonify({'message': 'Internal server error contact admin'}), 500
