@@ -5,6 +5,26 @@ from models.comment import Comment
 from flask import jsonify, request
 
 
+
+# Create an Endpoint that GET's the images assiociated with a comment
+@event_bp.route('/api/comments/<comment_id>/images', methods=['GET'])
+def get_images_for_comment(comment_id):
+    try:
+
+        comment = models.storage.get(Comment, comment_id)
+
+        if comment is None:
+            return jsonify({"error": "Comment not found"}), 404
+
+        comment_images = comment.images
+
+        return jsonify({"comment_id": comment_id, "images": comment_images})
+
+    except Exception as e:
+        models.storage.session.rollback()
+        return jsonify({"error": str(e)}), 404
+
+
 @api_views.route("/events/<event_id>/comments", methods=["POST"])
 def add_comment(event_id):
     """Adds a comment to an event"""
@@ -66,3 +86,5 @@ def get_comment_img(comment_id):
                "comment_id": comment_id}
         return jsonify(obj)
     return jsonify({"message": "Invalid Comment ID"}), 404
+
+
