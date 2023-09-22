@@ -35,10 +35,15 @@ def create_group():
         # models.storage.rollback()
         return jsonify({'message': str(e)}), 500
 
-@api_views.route("/groups/<group_id>")
+@api_views.route("/groups/<group_id>", methods=["GET"])
 def get_group(group_id):
     """Gets a group resource"""
-    pass
+    group = models.storage.get('Group', group_id)
+
+    if not group:
+        return jsonify({"message": "Group not found"}), 404
+
+    return jsonify(group.to_dict()), 200
 
 
 @api_views.route("/groups/<group_id>")
