@@ -199,7 +199,7 @@ class TestViewsUser(unittest.TestCase):
 
     def test_add_user_group_failure(self):
         """ 
-        Fails to adds a user to a group with invalid user ID
+        Fails to add a user to a group with invalid user ID
         """
         group = Group(title=self.unique_title)
         group.save()
@@ -217,7 +217,7 @@ class TestViewsUser(unittest.TestCase):
 
     def test_add_user_group_failure2(self):
         """ 
-        Fails to adds a user to a group with invalid group ID
+        Fails to add a user to a group with invalid group ID
         """
         group = Group(title=self.unique_title)
         group.save()
@@ -290,6 +290,33 @@ class TestViewsUser(unittest.TestCase):
 
         response = self.client.delete(
             f'/api/groups/1/members/{user.id}', content_type='application/json')
+
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "Invalid Group ID")
+        print(data)
+        
+    def test_retrieve_group_event_success(self):
+        """ 
+        Successfully retrieves list of events in a group
+        """
+        group = Group(title=self.unique_title)
+        group.save()
+
+        response = self.client.get(
+            f'/api/groups/{group.id}/events', content_type='application/json')
+
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(type(data), list)
+        print(data)
+
+    def test_retrieve_group_event_failure(self):
+        """ 
+        Fails to retrieve list of events in a group
+        """
+        response = self.client.get(
+            '/api/groups/1/events', content_type='application/json')
 
         data = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 404)

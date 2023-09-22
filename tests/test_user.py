@@ -2,6 +2,8 @@ import unittest
 import json
 import uuid
 from models.user import User
+from models.event import Event
+from datetime import datetime
 from app import app
 from models.engine.database import DBStorage
 
@@ -15,6 +17,10 @@ class TestViewsUser(unittest.TestCase):
         self.app.config['TESTING'] = True
         self.client = self.app.test_client()
         self.unique_email = f'test-{uuid.uuid4()}@example.com'
+        self.udate = str((datetime.utcfromtimestamp(
+            ((uuid.uuid4()).time - 0x01b21dd213814000) / 1e7)).strftime('%Y-%m-%d'))
+        self.utime = str((datetime.utcfromtimestamp(
+            ((uuid.uuid4()).time - 0x01b21dd213814000) / 1e7)).strftime('%H:%M:%S'))
         self.storage = DBStorage()
         self.storage.load()
 
@@ -164,6 +170,145 @@ class TestViewsUser(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data["message"], "User ID does not exist")
         print(data)
+        
+    def test_add_event_user_success(self):
+        """ 
+        Successfully add an event to a user resource
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        event = Event(
+            title="test_title",
+            description="test_description",
+            location="test_location",
+            start_date=self.udate,
+            end_date=self.udate,
+            start_time=self.utime,
+            end_time=self.utime,
+            creator_id=user.id,
+            thumbnail="thumbnail.jpg"
+        )
+        event.save()
+        
+        response = self.client.post(
+            f'/api/users/{user.id}/interests/{event.id}', content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["message"], "success")
+        
+    def test_add_event_user_failure(self):
+        """ 
+        Fails to add an event to a user resource with invalid user ID
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        event = Event(
+            title="test_title",
+            description="test_description",
+            location="test_location",
+            start_date=self.udate,
+            end_date=self.udate,
+            start_time=self.utime,
+            end_time=self.utime,
+            creator_id=user.id,
+            thumbnail="thumbnail.jpg"
+        )
+        event.save()
+        
+        response = self.client.post(
+            f'/api/users/1/interests/{event.id}', content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "Invalid User ID")
+        
+    def test_add_event_user_failure2(self):
+        """ 
+        Fails to add an event to a user resource with invalid event ID
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        
+        response = self.client.post(
+            f'/api/users/{user.id}/interests/1', content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "Invalid Event ID")
+        
+    def test_remove_event_user_success(self):
+        """ 
+        Successfully removes an event to a user resource
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        event = Event(
+            title="test_title",
+            description="test_description",
+            location="test_location",
+            start_date=self.udate,
+            end_date=self.udate,
+            start_time=self.utime,
+            end_time=self.utime,
+            creator_id=user.id,
+            thumbnail="thumbnail.jpg"
+        )
+        event.save()
+        
+        response = self.client.delete(
+            f'/api/users/{user.id}/interests/{event.id}', content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["message"], "success")
+        
+    def test_remove_event_user_failure(self):
+        """ 
+        Fails to remove an event to a user resource with invalid user ID
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        event = Event(
+            title="test_title",
+            description="test_description",
+            location="test_location",
+            start_date=self.udate,
+            end_date=self.udate,
+            start_time=self.utime,
+            end_time=self.utime,
+            creator_id=user.id,
+            thumbnail="thumbnail.jpg"
+        )
+        event.save()
+        
+        response = self.client.delete(
+            f'/api/users/1/interests/{event.id}', content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "Invalid User ID")
+        
+    def test_remove_event_user_failure2(self):
+        """ 
+        Fails to add an event to a user resource with invalid event ID
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        
+        response = self.client.delete(
+            f'/api/users/{user.id}/interests/1', content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "Invalid Event ID")
+        
 
     def tearDown(self):
         """

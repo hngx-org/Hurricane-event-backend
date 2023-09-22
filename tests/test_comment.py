@@ -313,6 +313,49 @@ class TestViewsUser(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data["message"], "Invalid Comment ID")
         print(data)
+        
+    def test_unlike_comment_success(self):
+        """ 
+        Successfully unlikes a comment
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        event = Event(
+            title="test_title",
+            description="test_description",
+            location="test_location",
+            start_date=self.udate,
+            end_date=self.udate,
+            start_time=self.utime,
+            end_time=self.utime,
+            creator_id=user.id,
+            thumbnail="thumbnail.jpg"
+        )
+        event.save()
+        comment = Comment(body="test_comment",
+                          user_id=user.id, event_id=event.id)
+        comment.save()
+
+        response = self.client.post(
+            f'/api/{comment.id}/{user.id}/likes', content_type='application/json')
+
+        self.assertEqual(response.status_code, 204)
+
+    def test_unlike_comment_failure(self):
+        """ 
+        Fails to unlike a comment with invalid comment ID
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        response = self.client.post(
+            f'/api/1/{user.id}/likes', content_type='application/json')
+
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "Comment not found")
+        print(data)
 
     def tearDown(self):
         """

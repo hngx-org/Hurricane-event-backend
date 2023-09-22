@@ -53,8 +53,31 @@ class TestViewsUser(unittest.TestCase):
 
     def test_create_event_failure(self):
         """ 
-    #     Fails to create new event
-    #     """
+         Fails to create new event with invalid creator ID
+         """
+        test_data = {
+            "title": "test_title",
+            "description": "test_description",
+            "location": "test_location",
+            "start_date": self.udate,
+            "end_date": self.udate,
+            "start_time": self.utime,
+            "creator_id": 1,
+            "thumbnail": "thumbnail.jpg"
+        }
+
+        response = self.client.post(
+            '/api/events', data=json.dumps(test_data), content_type='application/json')
+
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "User not found")
+        print(data)
+        
+    def test_create_event_failure2(self):
+        """ 
+         Fails to create new event
+         """
         user = User(name="Test User", email=self.unique_email,
                     avatar="avatar.jpg")
         user.save()
