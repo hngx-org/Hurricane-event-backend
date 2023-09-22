@@ -31,6 +31,28 @@ The database for this project is defined in this [here](models/engine/database.p
 ## Usage
 The _huricane-event-backend_ provides a RESTful API for managing events and related data on the events app.
 Some API endpoints include:
+* `/api/v1/events/:event_id/comments` (`POST`) - Add new comments to the event with `event_id`.
+* `api/v1/:event_id/comments` (`GET`) - Gets all comments of an event with id `event_id`.
+* `api/v1/comments/:comment_id/images` (`POST`) - Adds an image to a comment with id `comment_id`.
+* `api/v1/comments/:comment_id/images` (`GET`) - Gets an image of the comment with `comment_id`.
+* `api/v1/events` (`POST`) - Creates a new event
+* `api/v1/events` (`GET`) - Gets all events available
+* `api/v1/events/:event_id` (`GET`) - Gets the event with id `event_id`
+* `api/v1/events/:event_id` (`PUT`) - Updates the event with id `event_id`
+* `api/v1/events/:event_id` (`DELETE`) - Deletes the event with id `event_id`
+* `api/v1/events/:user_id/events` - (`GET`) - Gets all events the user with id `user_id` is interested in
+* `api/v1/groups` (`POST`) - Creates a new group
+* `api/v1/groups/:group_id` (`GET`) - Gets the group with id `group_id`
+* `api/v1/groups/:group_id` (`PUT`) - Updates the group with the id `group_id`
+* `api/v1/groups/:group_id` (`DELETE`) - Deletes the group with the id `group_id`
+* `api/v1/groups/:group_id/members/:user_id` (`POST`) - Adds user with id `user_id` to the group with id `group_id`
+*  `api/v1/groups/:group_id/members/:user_id` (`DELETE`) - Removes user with id `user_id` from the group with id `group_id`
+#### User 
+* `api/vi/auth` - (`POST`) - Authenticates a user
+* `api/v1/users/:user_id` (`GET`) - Gets profile of user with id `user_id`
+* `api/v1/users/:user_id` (`PUT`) - Updates profile of user with id `user_id`.
+* `api/v1//users/:user_id/interests/:event_id` - Adds the event with id `event_id` to user with id `user_id` interests
+* `api/v1//users/:user_id/interests/:event_id` - Removes the event with id `event_id` from user with id `user_id` interests
 ```angular2html
 
 ```
