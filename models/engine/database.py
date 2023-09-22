@@ -20,12 +20,18 @@ class DBStorage:
 
     def __init__(self):
         """Initializes Database object"""
-        DB_USER = getenv("DB_USER")
-        DB_PASS = getenv("DB_PASS")
-        DB_HOST = getenv("DB_HOST")
-        DB_PORT = getenv("DB_PORT")
+        DB_USER = "team"
+        #getenv("DB_USER")
+        DB_PASS = "event_team"
+        #getenv("DB_PASS")
+        DB_HOST = "http://ls-748579094099b0766a964caacd8cc4a4b73ec231.czwhjvdkncwk.us-east-2.rds.amazonaws.com"
+        #getenv("DB_HOST")
+        DB_PORT = 3306
+        #getenv("DB_PORT")
+        DB_NAME = "test_db"
 
-        self.__engine = create_engine("sqlite:///sampleEVENTAPP.db")
+        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}:{}/{}".format(DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME")
+        # sqlite:///sampleEVENTAPP.db")
 
     def load(self):
         """Loads data from the database to session"""
