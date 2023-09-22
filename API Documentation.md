@@ -37,7 +37,9 @@ The base URL for all the endpoints in this is:
 * **Request Body:**
   * **user_id(string, required):** This is the user_id used to identify the user
 
-* **Reponse:** This endpoint returns the user's dictionary if found details on success and a message `User  ID does not exist`
+* **Reponse:**
+* * **Status Code:** 200
+* * **Body** This endpoint returns the user's dictionary if found details on success and a message `User  ID does not exist`
 
 **sample usage**
     curl "https:hurricane-event.onrender.com/api/users/913e2847-39c4-4e34-905a-a23dca11b922"
