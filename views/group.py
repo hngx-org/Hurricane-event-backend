@@ -105,3 +105,63 @@ def remove_user(group_id, user_id):
         group.users.remove(user)
         group.save()
     return jsonify({"message": "success"})
+
+
+@api_views.route("/groups")
+def get_all_groups():
+    """Gets all groups"""
+    groups = models.storage.all("Group")
+    group_list = [group.to_dict() for group in groups]
+    return jsonify(group_list)
+
+
+@api_views.route("/groups/users/<user_id>")
+def get_user_groups(user_id):
+    """Gets all user groups"""
+    user = models.storage.get("User", user_id)
+    if user:
+        groups = user.groups
+        group_list = [group.to_dict() for group in groups]
+        return jsonify(group_list)
+    return jsonify({"message": "Invalid User ID"}), 404
+
+
+@api_views.route("/groups/<group_id>/events/<event_id>", methods=["POST"])
+def add_event_group(group_id, event_id):
+    """Adds an event to a group"""
+    group = models.storage.get("Group", group_id)
+    event = models.storage.get("Event", event_id)
+    if not group:
+        return jsonify({"message": "Invalid Group ID"}), 404
+    if not event:
+        return jsonify({"message": "Invalid Event ID"}), 404
+    if event not in group.events:
+        group.events.append(event)
+        group.save()
+    return jsonify({"message": "success"})
+
+
+@api_views.route("/groups/<group_id>/events/<event_id>", methods=["DELETE"])
+def remove_event_group(group_id, event_id):
+    """Deletes an event from a group"""
+    group = models.storage.get("Group", group_id)
+    event = models.storage.get("Event", event_id)
+    if not group:
+        return jsonify({"message": "Invalid Group ID"}), 404
+    if not event:
+        return jsonify({"message": "Invalid Event ID"}), 404
+    if event in group.events:
+        group.events.remove(event)
+        group.save()
+    return jsonify({"message": "success"})
+
+
+@api_views.route("/groups/<group_id>/events")
+def get_event_group(group_id):
+    """Gets event in a group"""
+    group = models.storage.get("Group", group_id)
+    if not group:
+        return jsonify({"message": "Invalid Group ID"}), 404
+    events = group.events
+    event_list = [event.to_dict() for event in events]
+    return jsonify(event_list)
