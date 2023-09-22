@@ -13,12 +13,15 @@ P.S: Can't think of a better less stressful to implement that, if you have an id
 11. DB session is in `models/engine/database.py`, not `db_connection/connection.py`
 12. If you need access to query please read the [DB_documentation](models/Documentation.md) on how to achieve that, don't write ~models.storage.session.query~
 13. I also made a change to the __init__ of [database](models/engine/database.py) to create a sqlite db named `sampleEVENTAPP.db`. Help is need to populate it with testing data, pending when we go live. so we can test our endpoints.
-14. All endpoints on users can be in the `auth/routes.py` 
-15. All endpoints on things groups in `group/routes.py`
-16. All endpoints on things evens in `events/routes.py`
+# 14. All endpoints on users can be in the `auth/routes.py` 
+# 15. All endpoints on things groups in `group/routes.py`
+# 16. All endpoints on things evens in `events/routes.py`
+17. Endpoints now in respective files in `views`
 
 
 ## The following are the list of endpoint we have
+
+Endpoints have increased than this
 
 1. [Login/Create_user](auth/routes.py): Signup is strictly done by google auth, the payload data's received will be used to login. and subsequesnt logins are operated on by the endpoint.
 2. [Logout](auth/routes.py): Signout/Logout endpoint is also available albeit they may be discrepancies due to how the session login token was stored and how they are retrieed by the team working on logout, this discrepancies will be meddled out ASAP.
