@@ -57,7 +57,7 @@ class DBStorage:
         """
         if type(cls) is str:
             cls = classes.get(cls)
-        if cls is not None and cls not in classes.values():
+        if cls is not None and cls in classes.values():
             return self.__session.query(cls).all()
         objects = []
         for cls in classes.values():

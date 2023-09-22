@@ -47,8 +47,8 @@ class BaseModel:
     def update(self, **kwargs):
         """Updates a field in the Model"""
         for key, value in kwargs.items():
-            if type(value) is date:
+            if key.endswith("date"):
                 value = date.fromisoformat(kwargs[key])
-            if type(value) is time:
+            if key.endswith("time"):
                 value = time.fromisoformat(kwargs[key])
             setattr(self, key, value)
