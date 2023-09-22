@@ -42,7 +42,7 @@ def hello_world():  # put application's code here
 # # Register the blueprints for each package here
 # app.register_blueprint(group_bp, url_prefix='/groups')
 # app.register_blueprint(event, url_prefix='/events')
-app.register_blueprint(auth, url_prefix='/api')
+# app.register_blueprint(auth, url_prefix='/api')
 # app.register_blueprint(api, url_prefix='/api')
 
 
