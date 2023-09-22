@@ -2,6 +2,7 @@ import models
 from . import api_views
 from models.event import Event
 from models.comment import Comment
+from models.user import User
 from flask import jsonify, request
 
 
@@ -66,3 +67,28 @@ def get_comment_img(comment_id):
                "comment_id": comment_id}
         return jsonify(obj)
     return jsonify({"message": "Invalid Comment ID"}), 404
+
+
+@api_views.route("/<comment_id>/<user_id>/likes", methods=["POST"])
+def unlike_comment(comment_id, user_id): 
+    # get the comment you want to unlike based on its id
+    comment = models.storage.get("Comment", comment_id)
+
+    # check if the comment exist
+    if not comment:
+        return jsonify({'message': 'Comment not found'}), 404
+
+    # get the user that wants to unlike the comment   
+    user = models.storage.get("User", user_id)
+
+    # get the array of users who have liked the comment
+    comment_likers = comment.likes
+
+    # check if the user has liked the comment
+    if user in comment_likers:
+        # remove the user from the array 
+        comment_likers.remove(user)
+        comment_likers.save()  # comment.save()
+
+    return '', 204
+
