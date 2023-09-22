@@ -89,7 +89,7 @@ The Hurricane Event Backend provides a comprehensive set of API endpoints to fac
   - `DELETE /api/categories/{category_id}`: Remove a category from the system.
 
 
-For detailed documentation on these API endpoints and their usage, please refer to the [DOCUMENTATION.md](DOCUMENTATION.md) file.
+For detailed documentation on these API endpoints and their usage, please refer to the [API DOCUMENTATION.md](APIDOCUMENTATION.md) file.
 
 ## Contributing
 
