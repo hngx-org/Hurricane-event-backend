@@ -15,6 +15,7 @@ CLIENT_SECRET = os.environ.get('client_secret') # Secret from Google
 OAUTH2_META_URL = 'https://accounts.google.com/.well-known/openid-configuration'
 
 auth = Blueprint('auth', __name__)
+auth.config = {}  # This helps avoid the "Blueprint does not have config" error
 
 oauth = OAuth(auth)
 oauth.register(name='google',
@@ -63,12 +64,12 @@ def login():
     """
     checks if the email already exist: if it does returns the User data with jwt token
 
-    if it does not exist create, creates a user and session id
+    if it does not exist redirect back to signup
     """
 
     email = request.json.get('email')
     try:
-        user = models.storage.session.execute(models.storage.select(User).filter_by(email=email)).scalar_one()
+        user = models.storage.getUser(User, email)
     except NoResultFound:
         return redirect(url_for('signup')), 307
     else:
@@ -80,7 +81,40 @@ def login():
             current_app.secret_key)
 
         user.access_token = token
-        models.storage.session.commit()
+        models.storage.save()
 
         return jsonify(access_token=user.access_token, name=user.name, email=user.email, response='Logged in successfully'), 200
 
+"""Sign out / Log out"""
+
+# This secret key should be kept secret and should match the one used for JWT encoding.
+SECRET_KEY = 'your_secret_key'
+
+# Simulated database to store logged-in users and their tokens (in-memory for simplicity).
+# In a real application, you'd use a proper database.
+logged_in_users = {}
+
+@auth.route('/logout', methods=['POST'])
+def logout():
+    # Get the JWT token from the request headers.
+    token = request.headers.get('Authorization')
+
+    if not token:
+        return 'No token provided', 401
+
+    # Verify the token to ensure it's valid.
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        return 'Expired Token', 401
+    except jwt.DecodeError:
+        return 'Invalid token', 401
+
+    # Check if the user is logged in.
+    user_id = payload.get('user_id')
+    if user_id in logged_in_users:
+        # Remove the user from the logged-in users list (logout).
+        del logged_in_users[user_id]
+
+    # Redirect the user to the login page after logging out.
+    return redirect(url_for('login_page'))

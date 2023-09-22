@@ -20,12 +20,18 @@ class DBStorage:
 
     def __init__(self):
         """Initializes Database object"""
-        DB_USER = getenv("DB_USER")
-        DB_PASS = getenv("DB_PASS")
-        DB_HOST = getenv("DB_HOST")
-        DB_PORT = getenv("DB_PORT")
+        DB_USER = "team"
+        #getenv("DB_USER")
+        DB_PASS = "event_team"
+        #getenv("DB_PASS")
+        DB_HOST = "http://ls-748579094099b0766a964caacd8cc4a4b73ec231.czwhjvdkncwk.us-east-2.rds.amazonaws.com"
+        #getenv("DB_HOST")
+        DB_PORT = 3306
+        #getenv("DB_PORT")
+        DB_NAME = "test_db"
 
-        self.__engine = create_engine("sqlite://")
+        self.__engine = create_engine("mysql+mysqldb://{}:{}@{}:{}/{}".format(DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME")
+        # sqlite:///sampleEVENTAPP.db")
 
     def load(self):
         """Loads data from the database to session"""
@@ -57,7 +63,7 @@ class DBStorage:
         """
         if type(cls) is str:
             cls = classes.get(cls)
-        if cls is not None and cls not in classes.values():
+        if cls is not None and cls in classes.values():
             return self.__session.query(cls).all()
         objects = []
         for cls in classes.values():
@@ -76,6 +82,24 @@ class DBStorage:
         if cls is not None and cls in classes.values():
             return self.__session.query(cls).filter_by(id=id).first()
 
+    def getUser(self, cls: Comment | Event | Group | Image | User | str, id: str):
+        """Gets an instance of a User
+            Only use during login to verify user details
+        """
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is not None and cls in classes.values():
+            return self.__session.query(cls).filter_by(email=id).first()
+
+    def getImages(self, cls: Comment | Event | Group | Image | User | str, id: str):
+        """
+        Get all images associated with a given comment
+        """
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is not None and cls in classes.values():
+            return self.__session.query(cls).filter_by(comment_id=id).all()
+
     def close(self):
         """Closes the session connection"""
         self.__session.remove()
@@ -93,3 +117,11 @@ class DBStorage:
     def obj_delete(self, obj: Comment | Event | Group | Image | User):
         """Deletes an instance of the model from the database"""
         self.__session.delete(obj)
+
+    def search(self, cls: Comment | Event | Group | Image | User | str,
+               **fields):
+        """Searches a Model using parameters"""
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is not None and cls in classes.values():
+            return self.__session.query(cls).filter_by(**fields).all()

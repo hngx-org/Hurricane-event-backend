@@ -1,5 +1,6 @@
 """Base Model of the application"""
 from uuid import uuid4
+from datetime import date, time
 from sqlalchemy import Column, String
 from sqlalchemy.ext.declarative import declarative_base
 import models
@@ -14,6 +15,7 @@ class BaseModel:
 
     def __init__(self):
         """Adds the object to a new session"""
+        self.id = str(uuid4())
         models.storage.new(self)
 
     def to_dict(self):
@@ -26,6 +28,11 @@ class BaseModel:
 
         if "_sa_instance_state" in new_dict:
             new_dict.pop("_sa_instance_state")
+        for key, value in new_dict.items():
+            if type(value) is date:
+                new_dict[key] = value.isoformat()
+            if type(value) is time:
+                new_dict[key] = value.isoformat()
 
         return new_dict
 
@@ -36,3 +43,12 @@ class BaseModel:
     def delete(self):
         """Deletes itself from the session"""
         models.storage.obj_delete(self)
+
+    def update(self, **kwargs):
+        """Updates a field in the Model"""
+        for key, value in kwargs.items():
+            if key.endswith("date"):
+                value = date.fromisoformat(kwargs[key])
+            if key.endswith("time"):
+                value = time.fromisoformat(kwargs[key])
+            setattr(self, key, value)
