@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from models.basemodel import BaseModel, Base
 from models.event import group_events
 from models.user_group import user_groups
+from models.group_image import group_image
 
 
 class Group(BaseModel, Base):
@@ -15,6 +16,8 @@ class Group(BaseModel, Base):
                          back_populates="groups")
     events = relationship("Event", secondary=group_events,
                           back_populates="groups")
+    image = Column(String(60), nullable=True)
+    # image = relationship("Image", secondary=group_image, uselist=False)
 
     def __init__(self, title: str):
         """Initializes the Group"""

@@ -8,6 +8,7 @@ from models.event import Event
 from models.group import Group
 from models.image import Image
 from models.user import User
+from typing import Union
 
 classes = {"Comment": Comment, "Event": Event, "Group": Group,
            "Image": Image, "User": User}
@@ -24,8 +25,17 @@ class DBStorage:
         DB_PASS = getenv("DB_PASS")
         DB_HOST = getenv("DB_HOST")
         DB_PORT = getenv("DB_PORT")
+        DB_NAME = getenv("DB_NAME")
 
-        self.__engine = create_engine("sqlite:///sampleEVENTAPP.db")
+        if DB_USER and DB_PASS and DB_HOST and DB_PORT and DB_NAME:
+            self.__engine = create_engine("mysql+mysqldb://{}:{}@{}:{}/{}"
+                                          .format(DB_USER,
+                                                  DB_PASS,
+                                                  DB_HOST,
+                                                  DB_PORT,
+                                                  DB_NAME))
+        else:
+            self.__engine = create_engine("sqlite:///sampleEVENTAPP.db")
 
     def load(self):
         """Loads data from the database to session"""
@@ -35,7 +45,7 @@ class DBStorage:
         Session = scoped_session(session_factory)
         self.__session = Session
 
-    def new(self, obj: Comment | Event | Group | Image | User):
+    def new(self, obj: Union[Comment, Event, Group, Image, User]):
         """Adds a new object to the session
 
         Args:
@@ -48,7 +58,7 @@ class DBStorage:
         """Saves all objects in session to the database"""
         self.__session.commit()
 
-    def all(self, cls: Comment | Event | Group | Image | User | str = None):
+    def all(self, cls: Union[Comment, Event, Group, Image, User, str] = None):
         """Gets all instances of a model in session
         Args:
             cls (Comment | Event | Group | Image | User | str): Model to query
@@ -57,14 +67,15 @@ class DBStorage:
         """
         if type(cls) is str:
             cls = classes.get(cls)
-        if cls is not None and cls not in classes.values():
+        if cls is not None and cls in classes.values():
             return self.__session.query(cls).all()
         objects = []
         for cls in classes.values():
             objects.extend(self.__session.query(cls).all())
         return objects
 
-    def get(self, cls: Comment | Event | Group | Image | User | str, id: str):
+    def get(self, cls: Union[Comment, Event, Group, Image, User, str],
+            id: str):
         """Gets an instance of a model
         Args:
             cls (Comment | Event | Group | Image | User | str): Model to query
@@ -76,7 +87,8 @@ class DBStorage:
         if cls is not None and cls in classes.values():
             return self.__session.query(cls).filter_by(id=id).first()
 
-    def getUser(self, cls: Comment | Event | Group | Image | User | str, id: str):
+    def getUser(self, cls: Union[Comment, Event, Group, Image, User, str],
+                id: str):
         """Gets an instance of a User
             Only use during login to verify user details
         """
@@ -84,8 +96,9 @@ class DBStorage:
             cls = classes.get(cls)
         if cls is not None and cls in classes.values():
             return self.__session.query(cls).filter_by(email=id).first()
-        
-    def getImages(self, cls: Comment | Event | Group | Image | User | str, id: str):
+
+    def getImages(self, cls: Union[Comment, Event, Group, Image, User, str],
+                  id: str):
         """
         Get all images associated with a given comment
         """
@@ -98,7 +111,7 @@ class DBStorage:
         """Closes the session connection"""
         self.__session.remove()
 
-    def delete(self, cls: Comment | Event | Group | Image | User | str,
+    def delete(self, cls: Union[Comment, Event, Group, Image, User, str],
                id: str) -> None:
         """Deletes an instance of the model from the database using id"""
 
@@ -108,6 +121,14 @@ class DBStorage:
             inst = self.__session.query(cls).filter_by(id=id).first()
             self.__session.delete(inst)
 
-    def obj_delete(self, obj: Comment | Event | Group | Image | User):
+    def obj_delete(self, obj: Union[Comment, Event, Group, Image, User]):
         """Deletes an instance of the model from the database"""
         self.__session.delete(obj)
+
+    def search(self, cls: Union[Comment, Event, Group, Image, User, str],
+               **fields):
+        """Searches a Model using parameters"""
+        if type(cls) is str:
+            cls = classes.get(cls)
+        if cls is not None and cls in classes.values():
+            return self.__session.query(cls).filter_by(**fields).all()
