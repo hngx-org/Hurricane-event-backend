@@ -54,8 +54,11 @@ def get_events():
 @api_views.route("/events/<event_id>")
 def get_event(event_id):
     """Get an event resource"""
-    event = models.storage.get("Event", event_id)
-    return jsonify(event.to_dict())
+    try:
+        event = models.storage.get("Event", event_id)
+        return jsonify(event.to_dict())
+    except:
+        return jsonify({"message": "Event not found"}), 404
 
 
 @api_views.route("/events/<event_id>", methods=["PUT"])
@@ -82,10 +85,13 @@ def update_event(event_id):
         if not value:
             update_info.pop(key)
     if update_info:
-        event = models.storage.get("Event", event_id)
-        event.update(**update_info)
-        event.save()
-        return jsonify({"message": "success"}), 202
+        try:
+            event = models.storage.get("Event", event_id)
+            event.update(**update_info)
+            event.save()
+            return jsonify({"message": "success"}), 202
+        except:
+            return jsonify({"message": "User ID does not exist"}), 404
     return jsonify({"message": "unchanged"})
 
 
