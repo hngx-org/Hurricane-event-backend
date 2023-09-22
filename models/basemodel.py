@@ -1,6 +1,6 @@
 """Base Model of the application"""
 from uuid import uuid4
-from datetime import date, datetime
+from datetime import date, time
 from sqlalchemy import Column, String
 from sqlalchemy.ext.declarative import declarative_base
 import models
@@ -31,7 +31,7 @@ class BaseModel:
         for key, value in new_dict.items():
             if type(value) is date:
                 new_dict[key] = value.isoformat()
-            if type(value) is datetime:
+            if type(value) is time:
                 new_dict[key] = value.isoformat()
 
         return new_dict
@@ -50,5 +50,5 @@ class BaseModel:
             if key.endswith("date"):
                 value = date.fromisoformat(kwargs[key])
             if key.endswith("time"):
-                value = datetime.fromisoformat(kwargs[key])
+                value = time.fromisoformat(kwargs[key])
             setattr(self, key, value)

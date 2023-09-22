@@ -203,6 +203,18 @@ event.groups.append(group)
 event.save()
 ```
 
+### Search using a fields
+To search a model using fields, use the `search` method
+```python
+import models
+...
+user = models.storage.search("User", email="")
+```
+it returns a list of values
+```
+[<User at 232xxx>, ...]
+```
+
 *Note:* When passing class strings to the methods, ensure that it starts with a capital letter and follows the format of the class.
 Example:
 - "User" for User or "RandomClass" for RandomClass is correct
