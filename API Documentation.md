@@ -1,13 +1,25 @@
 # API DOCUMENTATION
 This file contains the documentation for `Team Hurricane event App Backend API`
+## 3. User Authentication API
+This API allows you to manage user's authentication, login and update to users details, including events interests users develop
 
-**POST** `api/auth` : This endpoint is used to authenticate an old user or register a new user.
-**params**
-    email: The user's email address
-    name: The user's name
-    avatar: The user'sprofile pic
+### Base URL
+The base URL for all the endpoints in this is:
 
-**Return**: This endpoint returns the user_id on success or a message `No email found` or `No name found` and returns a `412 status code`
+### Endpoints
+
+
+1. ***Create a new User**
+* **URL** `/auth`
+* **Method:** This endpoint is used to authenticate an old user or register a new user.
+* **Request Body:**
+  *  **email**: The user's email address
+  *  **name:** The user's name
+  *  **avatar:** The user'sprofile pic
+
+* **Reponse:**:
+   * **Status code**: 201 (Created)
+   * **Body** This endpoint returns the JSON representation of ``user_id` on success or a message `No email found` or `No name found` and returns a `412 status code`
 
 **Sample usage**
     curl -X POST -d '({"name": "Jon", "email": "jonSnow@GOT.com", "avatar": "htpps://imgr.imgas234"})' "https://Hurricane-event.onrender.com/api/auth"
@@ -18,11 +30,14 @@ This file contains the documentation for `Team Hurricane event App Backend API`
         "user_id": "1913e2847-39c4-4e34-905a-a23dca11b922"
     }
 
-**GET** `/api/users/<user_id>` : Thus endpoint gets a user's profile from the database.
-**params**
-    user_id: This is the user_i used to identify the user
+2. **Get a user profile**
+* **URL:** `/users/<user_id>`
+* **Method:** GET
+* **Description:** This endpoint gets a user's profile from the database.
+* **Request Body:**
+  * **user_id(string, required):** This is the user_id used to identify the user
 
-**Returns**: This endpoint returns the user's dictionary if found details on success and a message `User  ID does not exist`
+* **Reponse:** This endpoint returns the user's dictionary if found details on success and a message `User  ID does not exist`
 
 **sample usage**
     curl "https:hurricane-event.onrender.com/api/users/913e2847-39c4-4e34-905a-a23dca11b922"
