@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect
 import models
 from views import api_views
 
@@ -16,6 +16,12 @@ def not_found(exception):
 def not_json(exception):
     """Data is not JSON"""
     return jsonify({"message": "Media Type is not JSON"}), 415
+
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return jsonify({'message': 'Internal server error contact admin'}), 500
 
 
 @app.teardown_appcontext
