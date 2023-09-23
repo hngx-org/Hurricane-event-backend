@@ -2,6 +2,8 @@ import models
 from . import api_views
 from models.event import Event
 from models.comment import Comment
+from models.comment_likes import comment_likes
+from models.user import User
 from flask import jsonify, request
 
 
@@ -67,35 +69,28 @@ def get_comment_img(comment_id):
         return jsonify(obj)
     return jsonify({"message": "Invalid Comment ID"}), 404
 
+@api_views.route("/<comment_id>/<user_id>/likes", methods=["DELETE"])
+def unlike_comment(comment_id, user_id): 
+    # get the comment you want to unlike based on its id
+    comment = models.storage.get("Comment", comment_id)
 
-"""
-    A POST Endpoint that adds a like to a comment
-"""
-@comment_likes_bp.route('/api/<int:comment_id>/<string:user_id>/likes', methods=['POST'])
-@jwt_required
-def add_like_to_comment(comment_id, user_id):
-    comment = Comment.query.get(comment_id)
-
-    # Check if the comment exists
+    # check if the comment exist
     if not comment:
-        return jsonify({"error": "Comment not found"}), 404
+        return jsonify({'message': 'Comment not found'}), 404
 
-    # Check if the user has already liked the comment
-    if user_id in comment.likes:
-        return jsonify({"error": "User has already liked this comment"}), 400
+    # get the user that wants to unlike the comment
+    # This is redundant, we already have the user id needed
+    # user = models.storage.get("User", user_id)
 
-    try:
-        # Append the user_id to the comment's likes and save
-        comment.likes.append(user_id)
-        models.storage.save()
+    # get the array of users who have liked the comment
+    comment_likes = comment.likes
 
-        return jsonify(
-            {
-                'success': True,
-                'comment_id': comment.id,
-                'likes': comment.likes
-            }
-        )
-    except Exception as e:
-        models.storage.session.rollback()
-        return jsonify({"error": str(e)}), 500
+    # check if the user has liked the comment
+    if user.id in comment_likes:
+        # remove the user from the array 
+        comment_likes.remove(user)
+        comment_likes.save()  # comment.save()
+
+    return '', 204
+
+
