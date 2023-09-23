@@ -1,6 +1,7 @@
 import models
 from . import api_views
 from models.event import Event
+from models.user import User
 from models.interested_event import interested_events
 from flask import jsonify, request
 
@@ -18,22 +19,26 @@ def create_event():
     end_time = data.get("end_time")
     creator_id = data.get("creator_id")
     thumbnail = data.get("thumbnail")
-
-    event_info = {"title": title, "location": location,
-                  "start_date": start_date, "end_date": end_date,
-                  "start_time": start_time, "end_time": end_time,
-                  "creator_id": creator_id
-                  }
-    for key, value in event_info.copy().items():
-        if not value:
-            event_info.pop(key)
-    if len(event_info) < 7:
-        return jsonify({"message": "Incomplete event details"}), 412
-    event_info["description"] = description
-    event_info["thumbnail"] = thumbnail
-    event = Event(**event_info)
-    event.save()
-    return jsonify({"message": "success"}), 201
+    
+    user = models.storage.get("User", id=creator_id)
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+    else:
+        event_info = {"title": title, "location": location,
+                    "start_date": start_date, "end_date": end_date,
+                    "start_time": start_time, "end_time": end_time,
+                    "creator_id": creator_id
+                    }
+        for key, value in event_info.copy().items():
+            if not value:
+                event_info.pop(key)
+        if len(event_info) < 7:
+            return jsonify({"message": "Incomplete event details"}), 412
+        event_info["description"] = description
+        event_info["thumbnail"] = thumbnail
+        event = Event(**event_info)
+        event.save()
+        return jsonify({"message": "success"}), 201
 
 
 @api_views.route("/events")
@@ -58,8 +63,11 @@ def get_events():
 @api_views.route("/events/<event_id>")
 def get_event(event_id):
     """Get an event resource"""
-    event = models.storage.get("Event", event_id)
-    return jsonify(event.to_dict())
+    try:
+        event = models.storage.get("Event", event_id)
+        return jsonify(event.to_dict())
+    except:
+        return jsonify({"message": "Event not found"}), 404
 
 
 @api_views.route("/events/<event_id>", methods=["PUT"])
@@ -86,10 +94,13 @@ def update_event(event_id):
         if not value:
             update_info.pop(key)
     if update_info:
-        event = models.storage.get("Event", event_id)
-        event.update(**update_info)
-        event.save()
-        return jsonify({"message": "success"}), 202
+        try:
+            event = models.storage.get("Event", event_id)
+            event.update(**update_info)
+            event.save()
+            return jsonify({"message": "success"}), 202
+        except:
+            return jsonify({"message": "User ID does not exist"}), 404
     return jsonify({"message": "unchanged"})
 
 
