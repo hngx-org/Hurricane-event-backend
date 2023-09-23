@@ -51,7 +51,11 @@ def get_events():
                     "title": event.title,
                     "description": event.description,
                     "start_date": event.start_date.isoformat(),
-                    "creator_id": event.creator_id
+                    "creator_id": event.creator_id,
+                    "location": event.location,
+                    "start_time": event.start_time.isoformat(),
+                    "end_date": event.end_date.isoformat(),
+                    "end_time": event.end_time.isoformat()
                     } for event in events]
     return jsonify(events_dict), 200
 
