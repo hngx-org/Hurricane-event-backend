@@ -13,8 +13,8 @@ class Comment(BaseModel, Base):
     body = Column(String(1024))
     user_id = Column(String(60), ForeignKey("users.id"))
     event_id = Column(String(60), ForeignKey("events.id"))
-    image = Column(String(60), nullable=True)
-    # image = relationship("Image", secondary=comment_image, uselist=False)
+    # image = Column(String(60), nullable=True)
+    image = relationship("Image", secondary=comment_image)
     likes = relationship("User", secondary=comment_likes,
                          back_populates="liked_comments")
 

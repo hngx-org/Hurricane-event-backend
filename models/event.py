@@ -7,6 +7,7 @@ from models.basemodel import BaseModel, Base
 from models.group_event import group_events
 from models.interested_event import interested_events
 from models.event_thumnail import event_thumnail
+from models.image import Image
 
 
 class Event(BaseModel, Base):
@@ -21,13 +22,13 @@ class Event(BaseModel, Base):
     start_time = Column(Time)
     end_time = Column(Time)
     creator_id = Column(String(60), ForeignKey("users.id"))
-    thumbnail = Column(String(60), nullable=True)
+    # thumbnail = Column(String(60), nullable=True)
     groups = relationship("Group", secondary=group_events,
                           back_populates="events")
     users = relationship("User", secondary=interested_events,
                          back_populates="events")
     comments = relationship("Comment")
-    # image = relationship("Image", secondary=event_thumnail, uselist=False)
+    thumbnail = relationship("Image", secondary=event_thumnail)
 
     def __init__(self, title: str, description: str, location: str,
                  start_date: str, end_date: str, start_time: str,
@@ -40,7 +41,8 @@ class Event(BaseModel, Base):
         self.end_date = date.fromisoformat(end_date)
         self.start_time = time.fromisoformat(start_time)
         self.end_time = time.fromisoformat(end_time)
-        self.thumbnail = thumbnail
         self.creator_id = creator_id
+        if thumbnail:
+            self.thumbnail.append(Image(image_url=thumbnail))
 
         super().__init__()

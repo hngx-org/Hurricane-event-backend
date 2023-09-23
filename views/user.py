@@ -91,3 +91,39 @@ def remove_interest(user_id, event_id):
         user.events.remove(event)
         user.save()
     return jsonify({"message": "success"})
+
+
+@api_views.route("/users/<user_id>/groups/<group_id>", methods=["POST"])
+def invite_users(user_id, group_id):
+    """Invites users to a group"""
+    main_user = models.storage.get("User", user_id)
+    group = models.storage.get("Group", group_id)
+
+    if not main_user:
+        return jsonify({"message": "Invalid User ID"}), 404
+    if not group:
+        return jsonify({"message": "Invalid Group ID"}), 404
+
+    data = request.get_json()
+    users = data.get("users")
+
+    if not users:
+        return jsonify({"message": "Users must be passed"}), 412
+
+    added_users = []
+    invalid_users = []
+
+    for identity in users:
+        user = models.storage.search("User", email=identity)
+        if user:
+            user = user[0]
+            if user not in group.users:
+                group.users.append(user)
+            added_users.append(identity)
+        else:
+            invalid_users.append(identity)
+    group.save()
+
+    return jsonify({"message": "success",
+                    "added_users": added_users,
+                    "invalid_users": invalid_users})

@@ -1,8 +1,4 @@
 from flask import Flask, jsonify
-from group.routes import group_bp
-from events.routes import event_bp
-from auth.routes import auth
-from api.routes import api
 import models
 from views import api_views
 
