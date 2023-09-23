@@ -1,9 +1,10 @@
 from flask import request, jsonify
 import models
+from models.group_event import group_events
+from models.user_group import user_groups
 from . import api_views
 from models.group import Group
 from models.image import Image
-
 
 @api_views.route("/groups", methods=["POST"])
 def create_group():
@@ -131,7 +132,6 @@ def remove_user(group_id, user_id):
         group.save()
     return jsonify({"message": "success"})
 
-
 @api_views.route("/groups")
 def get_all_groups():
     """Gets all groups"""
@@ -214,3 +214,21 @@ def get_event_group(group_id):
         else:
             event_list[event_idx]["thumbnail"] = ""
     return jsonify(event_list)
+
+@api_views.route("groups/<group_id>/all")
+def group_details(group_id):
+    # check if a group exists with this id
+    group = models.storage.get("Group", group_id)
+    if not group:
+        return jsonify({"error": "Group doesn't exist!"}), 404
+    group_events = group.events
+    user_groups = group.users
+
+    group_details = {
+        "name": group.title,
+        "events": [event.to_dict() for event in group_events],
+        "users": [user.to_dict() for user in user_groups]
+        }
+    
+    return jsonify({"details": group_details}), 200
+    

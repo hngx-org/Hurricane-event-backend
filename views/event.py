@@ -1,6 +1,7 @@
 import models
 from . import api_views
 from models.event import Event
+from models.user import User
 from models.interested_event import interested_events
 from flask import jsonify, request
 from models.image import Image
@@ -20,21 +21,25 @@ def create_event():
     creator_id = data.get("creator_id")
     thumbnail = data.get("thumbnail")
 
-    event_info = {"title": title, "location": location,
-                  "start_date": start_date, "end_date": end_date,
-                  "start_time": start_time, "end_time": end_time,
-                  "creator_id": creator_id
-                  }
-    for key, value in event_info.copy().items():
-        if not value:
-            event_info.pop(key)
-    if len(event_info) < 7:
-        return jsonify({"message": "Incomplete event details"}), 412
-    event_info["description"] = description
-    event_info["thumbnail"] = thumbnail
-    event = Event(**event_info)
-    event.save()
-    return jsonify({"message": "success"}), 201
+    user = models.storage.get("User", id=creator_id)
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+    else:
+        event_info = {"title": title, "location": location,
+                    "start_date": start_date, "end_date": end_date,
+                    "start_time": start_time, "end_time": end_time,
+                    "creator_id": creator_id
+                    }
+        for key, value in event_info.copy().items():
+            if not value:
+                event_info.pop(key)
+        if len(event_info) < 7:
+            return jsonify({"message": "Incomplete event details"}), 412
+        event_info["description"] = description
+        event_info["thumbnail"] = thumbnail
+        event = Event(**event_info)
+        event.save()
+        return jsonify({"message": "success"}), 201
 
 
 @api_views.route("/events")
@@ -47,7 +52,11 @@ def get_events():
                     "title": event.title,
                     "description": event.description,
                     "start_date": event.start_date.isoformat(),
-                    "creator_id": event.creator_id
+                    "creator_id": event.creator_id,
+                    "location": event.location,
+                    "start_time": event.start_time.isoformat(),
+                    "end_date": event.end_date.isoformat(),
+                    "end_time": event.end_time.isoformat()
                     } for event in events]
     return jsonify(events_dict), 200
 
