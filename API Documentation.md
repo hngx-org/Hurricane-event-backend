@@ -357,7 +357,7 @@ The base URL for all the endpoints in this is:
 * **URL:** `/events/<event_id>/comments`
 * **Method:** GET
 * **Description:** Gets all the comments associaated with an event
-* **path parameters:** `event ID`
+* **Path parameters:** `event ID`
 
 * **Response:**
     * **On success**
@@ -438,4 +438,55 @@ The base URL for all the endpoints in this is:
         "comment_id": "13es9q8783-2947-uew-234c-239848193"
     }
     ```
- 
+
+ 9. **Add a like to a comment**
+* **URL:** `/<comment_id>/<user_id>/likes`
+* **Method:** POST
+* **Description:** Adds a like to an event
+* **Path parameters:** `comment ID`, `user ID`
+* **Request Body**
+
+* **Response:**
+    * **On success**
+        * **Status Code**: 200 
+        * **Message:** `Success`
+    * **On Failure**
+        * **Status Code:** 400 (Bad Request), 404 (Not Found), 500 (Internal Server Error)
+        * **Message:** `User has already liked this comment`, `Comment not found`, `error description`
+
+* **sample usage**
+
+    ```curl -X POST \-H "Authorization: Bearer <YOUR_JWT_TOKEN>" \http://your-api-url/api/93586bjxnj568yb2e989/6504be151ab2e9ff5c476248/likes```
+
+    - Response
+    ```json
+    {
+        "success": True,
+        "comment_id": <comment_id>,
+        "likes": [<array of user_ids who have liked the comment>]
+    }
+    ```
+
+10. **Removes like from a comment**
+* **URL** `/<comment_id>/<user_id>/likes`
+* **Method** DELETE
+* **Description:** Unlikes Comment
+* **path_parameters** `comment_id`, `user_id`
+* **Request Body**
+* **Response**
+    * **On success**
+        * **Status code:** 204
+    * **On failure**
+        * **Status Code:** 404
+        * **Message:** `Comment not found`
+
+* **sample usage**
+
+    ```curl -X DELETE "url/api/913es9q8783-2947-uew-234c-239848193/90234-24y2-7s32-29847f24u3/likes"```
+
+    - Response
+    ```json
+    {
+       
+    }
+    ```
