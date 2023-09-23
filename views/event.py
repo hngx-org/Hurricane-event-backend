@@ -3,6 +3,7 @@ from . import api_views
 from models.event import Event
 from models.interested_event import interested_events
 from flask import jsonify, request
+from models.image import Image
 
 
 @api_views.route("/events", methods=["POST"])
@@ -55,7 +56,14 @@ def get_events():
 def get_event(event_id):
     """Get an event resource"""
     event = models.storage.get("Event", event_id)
-    return jsonify(event.to_dict())
+    if event:
+        event_list = event.to_dict()
+        if event.thumbnail:
+            event_list["thumbnail"] = event.thumbnail[0].url
+        else:
+            event_list["thumbnail"] = ""
+        return jsonify(event_list)
+    return jsonify({"message": "Invalid Event ID"}), 404
 
 
 @api_views.route("/events/<event_id>", methods=["PUT"])
@@ -76,16 +84,27 @@ def update_event(event_id):
                    "location": location, "start_date": start_date,
                    "end_date": end_date, "start_time": start_time,
                    "end_time": end_time, "creator_id": creator_id,
-                   "thumbnail": thumbnail
                    }
     for key, value in update_info.copy().items():
         if not value:
             update_info.pop(key)
     if update_info:
         event = models.storage.get("Event", event_id)
-        event.update(**update_info)
-        event.save()
-        return jsonify({"message": "success"}), 202
+        if event:
+            event.update(**update_info)
+            if thumbnail:
+                if event.thumbnail:
+                    prev = event.thumbnail[0]
+                    current = Image(image_url=thumbnail)
+                    event.thumbnail.remove(prev)
+                    event.thumbnail.append(current)
+                else:
+                    current = Image(image_url=thumbnail)
+                    event.thumbnail.append(current)
+            event.save()
+            return jsonify({"message": "success"}), 202
+        else:
+            return jsonify({"message": "Invalid Event ID"})
     return jsonify({"message": "unchanged"})
 
 
@@ -107,6 +126,13 @@ def interested_events(user_id):
     if user is None:
         return jsonify({'message': 'User not found'}), 404
     interested_events = user.events
-
     events = [event.to_dict() for event in interested_events]
+    [event.update({"thumbnail": models.storage.get("Event", event["id"]).thumbnail}) for event in events]
+    for event in events.copy():
+        image_obj = event["thumbnail"]
+        event_idx = events.index(event)
+        if image_obj:
+            events[event_idx]["thumbnail"] = image_obj[0].url
+        else:
+            events[event_idx]["thumbnail"] = ""
     return jsonify({'user': user.name, 'events': events})
