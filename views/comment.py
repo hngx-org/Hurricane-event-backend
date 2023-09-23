@@ -21,6 +21,9 @@ def add_comment(event_id):
         return jsonify({"message": "Invalid Event ID"}), 404
 
     if body and user_id:
+        user = models.storage.get("User", user_id)
+        if not user:
+            return jsonify({"message": "Invalid User ID"}), 404
         comment = Comment(body, user_id, event_id)
         comment.save()
 
@@ -45,7 +48,7 @@ def get_comment(event_id):
     if event:
         comments = event.comments
         comment_list = [comment.to_dict() for comment in comments]
-        [comment.update({"image": models.storage.get("Comment", comment["id"]).image}) for comment in comment_dict]
+        [comment.update({"image": models.storage.get("Comment", comment["id"]).image}) for comment in comment_list]
         for comment in comment_list.copy():
             image_obj = comment["image"]
             comm_idx = comment_list.index(comment)
@@ -53,6 +56,8 @@ def get_comment(event_id):
                 comment_list[comm_idx]["image"] = image_obj[0].url
             else:
                 comment_list[comm_idx]["image"] = ""
+            user = models.storage.get("User", comment["user_id"])
+            comment_list[comm_idx]["user"] = {"name": user.name, "avatar": user.avatar}
         return jsonify(comment_list)
     return jsonify({"message": "Invalid Event ID"}), 404
 
