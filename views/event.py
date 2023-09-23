@@ -39,7 +39,7 @@ def create_event():
         event_info["thumbnail"] = thumbnail
         event = Event(**event_info)
         event.save()
-        return jsonify({"message": "success"}), 201
+        return jsonify({"message": "success", "event_id": event.id}), 201
 
 
 @api_views.route("/events")
@@ -56,7 +56,8 @@ def get_events():
                     "location": event.location,
                     "start_time": event.start_time.isoformat(),
                     "end_date": event.end_date.isoformat(),
-                    "end_time": event.end_time.isoformat()
+                    "end_time": event.end_time.isoformat(),
+                    "thumbnail": event.thumbnail[0].url if event.thumbnail else ""
                     } for event in events]
     return jsonify(events_dict), 200
 
