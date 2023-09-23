@@ -9,7 +9,7 @@ class Image(BaseModel, Base):
     __tablename__ = "images"
     url = Column(String(255))
 
-    def __init__(self, image_url: str, comment_id: str):
+    def __init__(self, image_url: str):
         """Initializes the image object"""
         self.url = image_url
 

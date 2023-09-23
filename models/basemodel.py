@@ -1,7 +1,7 @@
 """Base Model of the application"""
 from uuid import uuid4
-from datetime import date, time
-from sqlalchemy import Column, String
+from datetime import date, time, datetime
+from sqlalchemy import Column, String, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 import models
 
@@ -12,10 +12,14 @@ class BaseModel:
     """BaseModel Class"""
 
     id = Column(String(60), primary_key=True, default=str(uuid4()))
+    created_at = Column(TIMESTAMP, default=datetime.utcnow())
+    updated_at = Column(TIMESTAMP, default=datetime.utcnow())
 
     def __init__(self):
         """Adds the object to a new session"""
         self.id = str(uuid4())
+        self.created_at = datetime.utcnow()
+        self.updated_at = datetime.utcnow()
         models.storage.new(self)
 
     def to_dict(self):
@@ -32,6 +36,8 @@ class BaseModel:
             if type(value) is date:
                 new_dict[key] = value.isoformat()
             if type(value) is time:
+                new_dict[key] = value.isoformat()
+            if type(value) is datetime:
                 new_dict[key] = value.isoformat()
 
         return new_dict
@@ -51,4 +57,7 @@ class BaseModel:
                 value = date.fromisoformat(kwargs[key])
             if key.endswith("time"):
                 value = time.fromisoformat(kwargs[key])
+            if (key == "created_at") or (key == "updated_at"):
+                continue
             setattr(self, key, value)
+        self.updated_at = datetime.utcnow()
