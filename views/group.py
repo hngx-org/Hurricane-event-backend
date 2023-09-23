@@ -3,7 +3,6 @@ import models
 from . import api_views
 from models.group import Group
 
-
 @api_views.route("/groups", methods=["POST"])
 def create_group():
     """Creates a new group"""
@@ -106,7 +105,6 @@ def remove_user(group_id, user_id):
         group.save()
     return jsonify({"message": "success"})
 
-
 @api_views.route("/groups")
 def get_all_groups():
     """Gets all groups"""
@@ -165,3 +163,4 @@ def get_event_group(group_id):
     events = group.events
     event_list = [event.to_dict() for event in events]
     return jsonify(event_list)
+

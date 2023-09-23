@@ -3,6 +3,7 @@ from models.group import Group
 
 app = Flask(__name__)
 
+
 MAX_NO_OF_IMAGES = 2
 
 def to_dict(obj):
@@ -17,12 +18,18 @@ def to_dict(obj):
     return data
 
 
+
+
 @app.route("/api/groups/<group_id>", methods=["GET"])
+
+""""
+@api_views.route("groups/<group_id>/all")
 def group_details(group_id):
     # check if a group exists with this id
-    group = Group.query.filter_by(id=group_id).first()
+    group = models.storage.get("Group", group_id)
     if not group:
         return jsonify({"error": "Group doesn't exist!"}), 404
+    #group_events = group.events
 
     group_details = {
         "name": group.title,
@@ -31,7 +38,7 @@ def group_details(group_id):
         "users": [to_dict(user) for user in group.users]}
     
     return jsonify({"details": group_details}), 200
-
+"""
 
 
 if __name__ == "__main__":
