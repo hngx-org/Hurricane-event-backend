@@ -123,7 +123,7 @@ def delete_event(event_id):
     """Deletes an event resource"""
     event = models.storage.get("Event", event_id)
     if event:
-        models.storage.delete("Event", event.id)
+        models.storage.delete("Event", event_id)
         models.storage.save()
         return jsonify({"message": "success"})
     return jsonify({"message": "Resource UID not found"}), 404
