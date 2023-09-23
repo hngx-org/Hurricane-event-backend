@@ -42,7 +42,7 @@ def authenticate_user():
 
             token = jwt.encode({
                 'user': user.id,
-                'email': user.user,
+                'email': user.email,
                 # 'exp': datetime.utcnow() + timedelta(hours=1)
             },
             current_app.secret_key, algorithm='HS256')
