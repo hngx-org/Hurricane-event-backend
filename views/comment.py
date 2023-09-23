@@ -97,7 +97,7 @@ def unlike_comment(comment_id, user_id):
 
 @api_views.route("/<comment_id>/<user_id>/likes", methods=["POST"]) 
 def add_like_to_comment(comment_id, user_id):
-    comment = Comment.query.get(comment_id)
+    models.storage.get("Comment", comment_id)
 
     # Check if the comment exists
     if not comment:
@@ -110,7 +110,7 @@ def add_like_to_comment(comment_id, user_id):
     try:
         # Append the user_id to the comment's likes and save
         comment.likes.append(user_id)
-        models.storage.save()
+        comment.save()
 
         return jsonify(
             {
