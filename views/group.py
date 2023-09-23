@@ -12,17 +12,26 @@ def create_group():
     data = request.get_json()
     title = data.get("title")
     image = data.get("image")
+    user_id = data.get("user_id")
 
     # Check if 'title' is provided in the JSON data
     if not title:
         return jsonify({'message': 'Title is required'}), 412
+    # Checks if user id was provided
+    if not user_id:
+        return jsonify({"message": "User ID is required"}), 412
 
     all_groups = models.storage.all(Group)
 
     title_exists = [group for group in all_groups if group.title == title]
 
     if title_exists:
-        return jsonify({'message': 'Group already exists'})
+        return jsonify({'message': f'Group with title "{title}" already exists'}), 409
+
+    # Checks for the User
+    user = models.storage.get("User", user_id)
+    if not user:
+        return jsonify({"message": "Invalid User ID"}), 404
 
     # Create a new group instance
     new_group = Group(title=title)
@@ -37,6 +46,11 @@ def create_group():
             new_group.image.append(current)
     # Commit the changes to the database
     new_group.save()
+
+    # Adds user to a group
+    user.groups.append(new_group)
+    user.save()
+
     group_dict = new_group.to_dict()
     if new_group.image:
         group_dict["image"] = new_group.image[0].url
@@ -148,6 +162,18 @@ def get_all_groups():
     return jsonify(group_list)
 
 
+@api_views.route("/groups/<group_id>/users")
+def get_group_users(group_id):
+    """Gets all group's users"""
+    group = models.storage.get("Group", group_id)
+    if not group:
+        return jsonify({"message": "Invalid Group ID"}), 404
+
+    users = group.users
+    user_list = [user.to_dict() for user in users]
+    return jsonify({"group_id": group_id, "users": user_list})
+
+
 @api_views.route("/groups/users/<user_id>")
 def get_user_groups(user_id):
     """Gets all user groups"""
@@ -229,6 +255,6 @@ def group_details(group_id):
         "events": [event.to_dict() for event in group_events],
         "users": [user.to_dict() for user in user_groups]
         }
-    
+
     return jsonify({"details": group_details}), 200
-    
+
