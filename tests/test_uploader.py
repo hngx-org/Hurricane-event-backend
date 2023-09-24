@@ -1,10 +1,7 @@
 import unittest
-from unittest.mock import patch, MagicMock
-import json, os
+from unittest.mock import patch
 import uuid
-from PIL import Image, ImageDraw
 from io import BytesIO
-from models.user import User
 from app import app
 from models.engine.database import DBStorage
 
@@ -17,7 +14,6 @@ class TestViewsUser(unittest.TestCase):
         self.app = app
         self.app.config['TESTING'] = True
         self.client = self.app.test_client()
-        self.unique_email = f'test-{uuid.uuid4()}@example.com'
         self.storage = DBStorage()
         self.storage.load()
 
