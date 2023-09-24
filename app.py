@@ -3,6 +3,7 @@ import models
 from views import api_views
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "_HuRrIcAnE_eVeNt_ApP_"
 app.register_blueprint(api_views, url_prefix="/api")
 
 
