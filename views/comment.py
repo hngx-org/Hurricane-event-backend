@@ -6,6 +6,7 @@ from models.comment_likes import comment_likes
 from models.user import User
 from flask import jsonify, request
 from models.image import Image
+from datetime import datetime
 
 @api_views.route("/events/<event_id>/comments", methods=["POST"])
 def add_comment(event_id):
@@ -21,6 +22,13 @@ def add_comment(event_id):
         return jsonify({"message": "Invalid Event ID"}), 404
 
     if body and user_id:
+        user = models.storage.get("User", user_id)
+        if not user:
+            return jsonify({"message": "Invalid User ID"}), 404
+
+        # Check if the user has an avatar
+        user_avatar = user.avatar if hasattr(user, "avatar") else ""
+
         comment = Comment(body, user_id, event_id)
         comment.save()
 
@@ -34,6 +42,19 @@ def add_comment(event_id):
                 current = Image(image_url=image)
                 comment.image.append(current)
             comment.save()
+
+        # Get the creation date of the comment
+        creation_date = comment.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
+        # Return additional information
+        comment_info = {
+            "message": "success",
+            "name": user.name,
+            "user_id": user.id,
+            "user_avatar": user_avatar,
+            "creation_date": creation_date
+        }
+
         return jsonify({"message": "success"}), 201
     return jsonify({"message": "Incomplete comment details"}), 412
 
