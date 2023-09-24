@@ -114,7 +114,7 @@ def update_event(event_id):
             event.save()
             return jsonify({"message": "success"}), 202
         else:
-            return jsonify({"message": "Invalid Event ID"})
+            return jsonify({"message": "Invalid Event ID"}), 404
     return jsonify({"message": "unchanged"})
 
 

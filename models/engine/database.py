@@ -35,7 +35,7 @@ class DBStorage:
                                                   DB_PORT,
                                                   DB_NAME))
         else:
-            self.__engine = create_engine("sqlite:///sampleEVENTAPP.db")
+            self.__engine = create_engine("sqlite:///sampleEVENTAPP.db") # Before running tests, please change this to "sqlite:///testEVENTAPP.db"
 
     def load(self):
         """Loads data from the database to session"""

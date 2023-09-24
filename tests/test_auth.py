@@ -18,53 +18,64 @@ class TestViewsUser(unittest.TestCase):
         self.storage = DBStorage()
         self.storage.load()
 
-    def test_login_success(self):
-        """
-        Successfully login user
+    def test_authenticate_user_success(self):
+        """ 
+        Sucessfully authenticates user and returns user_id
         """
         user = User(name="Test User", email=self.unique_email,
                     avatar="avatar.jpg")
         user.save()
-        payload = {
-            "userinfo": {
-                "email": user.email,
-                "name": "Test User",
-                "picture": "https://example.com/avatar.jpg"
-            }
+
+        test_data = {
+            "email": self.unique_email, "name": "Test User", "avatar": "avatar.jpg"
         }
 
         response = self.client.post(
-            '/api/users/login', data=json.dumps(payload))
+            '/api/auth', data=json.dumps(test_data), content_type='application/json')
 
         data = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("user_id", data)
-        self.assertIn("name", data)
-        self.assertIn("email", data)
-        self.assertIn("avatar", data)
+        self.assertIn('user_id', data)
+        self.assertEqual(response.status_code, 201)
         print(data)
 
-    def test_login_no_result(self):
-        """ 
-        Create new user if user not found
+    def test_authenticate_user_failure(self):
         """
-        payload = {
-            "userinfo": {
-                "email": self.unique_email,
-                "name": "Test User",
-                "picture": "https://example.com/avatar.jpg"
-            }
+        Fails to authenticate user with missing email
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+
+        test_data = {
+            "name": "Test User", "avatar": "avatar.jpg"
         }
 
         response = self.client.post(
-            '/api/users/login', data=json.dumps(payload))
+            '/api/auth', data=json.dumps(test_data), content_type='application/json')
 
         data = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("user_id", data)
-        self.assertIn("name", data)
-        self.assertIn("email", data)
-        self.assertIn("avatar", data)
+        self.assertEqual(response.status_code, 412)
+        self.assertEqual(data["message"], "No email found")
+        print(data)
+
+    def test_authenticate_user_failure2(self):
+        """ 
+        Fails to authenticate user with invalid email and missing name
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+
+        test_data = {
+            "email": "Invalid", "avatar": "avatar.jpg"
+        }
+
+        response = self.client.post(
+            '/api/auth', data=json.dumps(test_data), content_type='application/json')
+
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 412)
+        self.assertEqual(data["message"], "No name found")
         print(data)
 
     def tearDown(self):
