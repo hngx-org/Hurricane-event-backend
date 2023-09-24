@@ -1,7 +1,8 @@
 import models
 from . import api_views
 from models.user import User
-from flask import request, jsonify
+from flask import request, jsonify, current_app
+import jwt
 
 
 @api_views.route("/auth", methods=["POST"])
@@ -24,7 +25,10 @@ def authenticate_user():
                 user.save()
             else:
                 return jsonify({"message": "No name found"}), 412
-        return jsonify({"user_id": user.id})
+        token = jwt.encode({'user': user.id, 'email': user.email,
+                            # 'exp': datetime.utcnow() + timedelta(hours=1)
+                            }, current_app.secret_key, algorithm='HS256')
+        return jsonify({"user_id": user.id, "Authorization_token": token}), 201
     return jsonify({"message": "No email found"}), 412
 
 
@@ -127,3 +131,25 @@ def invite_users(user_id, group_id):
     return jsonify({"message": "success",
                     "added_users": added_users,
                     "invalid_users": invalid_users})
+
+
+@api_views.route("/test/auth", methods=["POST"])
+def authenticate_test():
+    """Authenticates a test user
+    """
+    data = request.get_json()
+    email = data.get("email")
+
+    if email:
+        token = jwt.encode({'email': "test_email",
+                            # 'exp': datetime.utcnow() + timedelta(hours=1)
+                            }, current_app.secret_key, algorithm='HS256')
+        return jsonify({"user_id": "Just testing", "Authorization_token": token}), 201
+    return jsonify({"message": "No email found"}), 412
+
+
+@api_views.route("/test/others")
+def test_others():
+    """Authenticates a test user
+    """
+    return jsonify({"message": "It worked"}), 200
