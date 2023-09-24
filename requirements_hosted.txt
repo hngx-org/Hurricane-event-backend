@@ -5,7 +5,7 @@ certifi
 cffi
 charset-normalizer
 click
-cloudinary
+cloudinary==1.34.0
 colorama
 cryptography
 Flask
@@ -15,6 +15,7 @@ flask-marshmallow
 Flask-SQLAlchemy
 Flask-User
 Flask-WTF
+Gunicorn
 greenlet
 idna
 importlib-metadata
