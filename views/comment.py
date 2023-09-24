@@ -128,25 +128,30 @@ def unlike_comment(comment_id, user_id):
 @api_views.route("/<comment_id>/<user_id>/likes", methods=["POST"])
 def add_like_to_comment(comment_id, user_id):
     comment = models.storage.get("Comment", comment_id)
+    
+    user = models.storage.get("User", user_id)  # Retrieve the User instance
 
     # Check if the comment exists
     if not comment:
         return jsonify({"error": "Comment not found"}), 404
 
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
     # Check if the user has already liked the comment
-    if user_id in comment.likes:
+    if user_id in [like.id for like in comment.likes]:
         return jsonify({"error": "User has already liked this comment"}), 400
 
     try:
         # Append the user_id to the comment's likes and save
-        comment.likes.append(user_id)
+        comment.likes.append(user)
         comment.save()
 
         return jsonify(
             {
                 'success': True,
                 'comment_id': comment.id,
-                'likes': comment.likes
+                'likes': [like.id for like in comment.likes]  # Assuming you want to return a list of user IDs
             }
         )
     except Exception as e:
