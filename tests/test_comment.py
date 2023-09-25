@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 import json
 import uuid
 from datetime import datetime
@@ -314,9 +315,52 @@ class TestViewsUser(unittest.TestCase):
         self.assertEqual(data["message"], "Invalid Comment ID")
         print(data)
         
-    def test_unlike_comment_success(self):
+    # def test_unlike_comment_success(self):
+    #     """ 
+    #     Successfully unlikes a comment
+    #     """
+    #     user = User(name="Test User", email=self.unique_email,
+    #                 avatar="avatar.jpg")
+    #     user.save()
+    #     event = Event(
+    #         title="test_title",
+    #         description="test_description",
+    #         location="test_location",
+    #         start_date=self.udate,
+    #         end_date=self.udate,
+    #         start_time=self.utime,
+    #         end_time=self.utime,
+    #         creator_id=user.id,
+    #         thumbnail="thumbnail.jpg"
+    #     )
+    #     event.save()
+    #     comment = Comment(body="test_comment",
+    #                       user_id=user.id, event_id=event.id)
+    #     comment.save()
+
+    #     response = self.client.post(
+    #         f'/api/{comment.id}/{user.id}/likes', content_type='application/json')
+
+    #     self.assertEqual(response.status_code, 204)
+
+    # def test_unlike_comment_failure(self):
+    #     """ 
+    #     Fails to unlike a comment with invalid comment ID
+    #     """
+    #     user = User(name="Test User", email=self.unique_email,
+    #                 avatar="avatar.jpg")
+    #     user.save()
+    #     response = self.client.post(
+    #         f'/api/1/{user.id}/likes', content_type='application/json')
+
+    #     data = json.loads(response.data.decode('utf-8'))
+    #     self.assertEqual(response.status_code, 404)
+    #     self.assertEqual(data["message"], "Comment not found")
+    #     print(data)
+    
+    def test_add_likes_comment_success(self):
         """ 
-        Successfully unlikes a comment
+        Successfully adds a like to a comment
         """
         user = User(name="Test User", email=self.unique_email,
                     avatar="avatar.jpg")
@@ -336,25 +380,111 @@ class TestViewsUser(unittest.TestCase):
         comment = Comment(body="test_comment",
                           user_id=user.id, event_id=event.id)
         comment.save()
-
+        
         response = self.client.post(
-            f'/api/{comment.id}/{user.id}/likes', content_type='application/json')
-
-        self.assertEqual(response.status_code, 204)
-
-    def test_unlike_comment_failure(self):
+            f'/api/{comment.id}/{comment.user_id}/likes', content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["success"], True)
+        self.assertIn("comment_id", data)
+        self.assertIn("likes", data)
+        print(data)
+        
+    def test_add_likes_comment_failure(self):
         """ 
-        Fails to unlike a comment with invalid comment ID
+        Fails to add a like to a comment with invalid comment ID
         """
         user = User(name="Test User", email=self.unique_email,
                     avatar="avatar.jpg")
         user.save()
+        event = Event(
+            title="test_title",
+            description="test_description",
+            location="test_location",
+            start_date=self.udate,
+            end_date=self.udate,
+            start_time=self.utime,
+            end_time=self.utime,
+            creator_id=user.id,
+            thumbnail="thumbnail.jpg"
+        )
+        event.save()
+        comment = Comment(body="test_comment",
+                          user_id=user.id, event_id=event.id)
+        comment.save()
+        
         response = self.client.post(
-            f'/api/1/{user.id}/likes', content_type='application/json')
-
+            f'/api/1/{comment.user_id}/likes', content_type='application/json')
+        
         data = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(data["message"], "Comment not found")
+        self.assertEqual(data["error"], "Comment not found")
+        print(data)
+        
+    def test_add_likes_comment_failure2(self):
+        """ 
+        Fails to add a like to a comment with invalid user ID
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        event = Event(
+            title="test_title",
+            description="test_description",
+            location="test_location",
+            start_date=self.udate,
+            end_date=self.udate,
+            start_time=self.utime,
+            end_time=self.utime,
+            creator_id=user.id,
+            thumbnail="thumbnail.jpg"
+        )
+        event.save()
+        comment = Comment(body="test_comment",
+                          user_id=user.id, event_id=event.id)
+        comment.save()
+        
+        response = self.client.post(
+            f'/api/{comment.id}/1/likes', content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["error"], "User not found")
+        print(data)
+        
+    def test_add_likes_comment_failure3(self):
+        """ 
+        Fails to add a like to a comment with comment already liked by user
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        event = Event(
+            title="test_title",
+            description="test_description",
+            location="test_location",
+            start_date=self.udate,
+            end_date=self.udate,
+            start_time=self.utime,
+            end_time=self.utime,
+            creator_id=user.id,
+            thumbnail="thumbnail.jpg"
+        )
+        event.save()
+        comment = Comment(body="test_comment",
+                          user_id=user.id, event_id=event.id)
+        comment.save()
+        
+        comment.likes.append(user)
+        comment.save()
+        
+        response = self.client.post(
+            f'/api/{comment.id}/{comment.user_id}/likes', content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data["error"], "User has already liked this comment")
         print(data)
 
     def tearDown(self):

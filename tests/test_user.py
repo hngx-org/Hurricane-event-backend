@@ -3,6 +3,7 @@ import json
 import uuid
 from models.user import User
 from models.event import Event
+from models.group import Group
 from datetime import datetime
 from app import app
 from models.engine.database import DBStorage
@@ -16,6 +17,7 @@ class TestViewsUser(unittest.TestCase):
         self.app = app
         self.app.config['TESTING'] = True
         self.client = self.app.test_client()
+        self.unique_title = f'test-{uuid.uuid4()}-title'
         self.unique_email = f'test-{uuid.uuid4()}@example.com'
         self.udate = str((datetime.utcfromtimestamp(
             ((uuid.uuid4()).time - 0x01b21dd213814000) / 1e7)).strftime('%Y-%m-%d'))
@@ -41,7 +43,7 @@ class TestViewsUser(unittest.TestCase):
 
         data = json.loads(response.data.decode('utf-8'))
         self.assertIn('user_id', data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         print(data)
 
     def test_authenticate_user_failure(self):
@@ -308,6 +310,97 @@ class TestViewsUser(unittest.TestCase):
         data = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data["message"], "Invalid Event ID")
+        
+    def test_invite_user_group_success(self):
+        """ 
+        Successfully invites users to a group
+        """
+        main_user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        main_user.save()
+        group = Group(title=self.unique_title)
+        group.save()
+        
+        test_data = {
+            "users": [main_user.email]
+        }
+        
+        response = self.client.post(
+            f'/api/users/{main_user.id}/groups/{group.id}', data=json.dumps(test_data), content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data["message"], "success")
+        self.assertEqual(type(data["added_users"]), list)
+        self.assertEqual(type(data["invalid_users"]), list)
+        print(data)
+        
+    def test_invite_user_group_failure(self):
+        """ 
+        Fails to invite users to a group with invalid user ID
+        """
+        main_user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        main_user.save()
+        group = Group(title=self.unique_title)
+        group.save()
+        
+        test_data = {
+            "users": [main_user.email]
+        }
+        
+        response = self.client.post(
+            f'/api/users/1/groups/{group.id}', data=json.dumps(test_data), content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "Invalid User ID")
+        print(data)
+        
+    def test_invite_user_group_failure2(self):
+        """ 
+        Fails to invite users to a group with invalid group ID
+        """
+        main_user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        main_user.save()
+        
+        test_data = {
+            "users": [main_user.email]
+        }
+        
+        response = self.client.post(
+            f'/api/users/{main_user.id}/groups/1', data=json.dumps(test_data), content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "Invalid Group ID")
+        print(data)
+        
+    def test_invite_user_group_failure3(self):
+        """ 
+        Fails to invite users to a group with missing users data
+        """
+        main_user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        main_user.save()
+        group = Group(title=self.unique_title)
+        group.save()
+        
+        test_data = {
+        }
+        
+        response = self.client.post(
+            f'/api/users/{main_user.id}/groups/{group.id}', data=json.dumps(test_data), content_type='application/json')
+        
+        data = json.loads(response.data.decode('utf-8'))
+        
+        self.assertEqual(response.status_code, 412)
+        self.assertEqual(data["message"], "Users must be passed")
+        print(data)
         
 
     def tearDown(self):

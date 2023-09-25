@@ -164,7 +164,7 @@ class TestViewsUser(unittest.TestCase):
 
         data = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(data["message"], "Event not found")
+        self.assertEqual(data["message"], "Invalid Event ID")
         print(data)
 
     def test_update_event_success(self):
@@ -244,7 +244,7 @@ class TestViewsUser(unittest.TestCase):
 
         data = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(data["message"], "User ID does not exist")
+        self.assertEqual(data["message"], "Invalid Event ID")
         print(data)
 
     def test_delete_event_success(self):

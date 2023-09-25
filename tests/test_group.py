@@ -23,10 +23,11 @@ class TestViewsUser(unittest.TestCase):
     def test_create_group_success(self):
         """Successfully creates new group
         """
-        # group = Group(title="test_title")
-        # group.save()
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
         test_data = {
-            "title": self.unique_title
+            "title": self.unique_title, "image": "test_image.png", "user_id": user.id
         }
 
         response = self.client.post(
@@ -40,7 +41,11 @@ class TestViewsUser(unittest.TestCase):
         """
         Fails to create new group with no title
         """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
         test_data = {
+            "image": "test_image.png", "user_id": user.id
         }
 
         response = self.client.post(
@@ -50,23 +55,58 @@ class TestViewsUser(unittest.TestCase):
         self.assertEqual(response.status_code, 412)
         self.assertEqual(data["message"], "Title is required")
         print(data)
-
+        
     def test_create_group_failure2(self):
         """
-        Fails to create new group with existing title
+        Fails to create new group with no user ID
         """
-        group = Group(title=self.unique_title)
-        group.save()
         test_data = {
-            "title": group.title
+            "title": self.unique_title, "image": "test_image.png"
         }
 
         response = self.client.post(
             '/api/groups', data=json.dumps(test_data), content_type='application/json')
 
         data = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["message"], "Group already exists")
+        self.assertEqual(response.status_code, 412)
+        self.assertEqual(data["message"], "User ID is required")
+        print(data)
+
+    def test_create_group_failure3(self):
+        """
+        Fails to create new group with existing title
+        """
+        user = User(name="Test User", email=self.unique_email,
+                    avatar="avatar.jpg")
+        user.save()
+        group = Group(title=self.unique_title)
+        group.save()
+        test_data = {
+            "title": group.title, "image": "test_image.png", "user_id": user.id
+        }
+
+        response = self.client.post(
+            '/api/groups', data=json.dumps(test_data), content_type='application/json')
+
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(data["message"], f'Group with title "{group.title}" already exists')
+        print(data)
+        
+    def test_create_group_failure4(self):
+        """
+        Fails to create new group with invalid user ID
+        """
+        test_data = {
+            "title": self.unique_title, "image": "test_image.png", "user_id": 1
+        }
+
+        response = self.client.post(
+            '/api/groups', data=json.dumps(test_data), content_type='application/json')
+
+        data = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data["message"], "Invalid User ID")
         print(data)
 
     def test_retrieve_group_success(self):
